@@ -46,7 +46,7 @@ HEADERS = adler32.h                                                     \
           hwcontext_videotoolbox.h                                      \
           hwcontext_vdpau.h                                             \
           hwcontext_vulkan.h                                            \
-          imgutils.h                                                    \
+	  imgutils.h                                                    \
           intfloat.h                                                    \
           intreadwrite.h                                                \
           lfg.h                                                         \
@@ -184,6 +184,7 @@ OBJS-$(CONFIG_VAAPI)                    += hwcontext_vaapi.o
 OBJS-$(CONFIG_VIDEOTOOLBOX)             += hwcontext_videotoolbox.o
 OBJS-$(CONFIG_VDPAU)                    += hwcontext_vdpau.o
 OBJS-$(CONFIG_VULKAN)                   += hwcontext_vulkan.o
+OBJS-$(CONFIG_OMX)                      += hwcontext_omx.o
 
 OBJS += $(COMPAT_OBJS:%=../compat/%)
 

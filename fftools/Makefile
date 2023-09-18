@@ -43,11 +43,13 @@ install-progs-$(CONFIG_SHARED): install-libs
 install-progs: install-progs-yes $(AVPROGS)
 	$(Q)mkdir -p "$(BINDIR)"
 	$(INSTALL) -c -m 755 $(AVPROGS) "$(BINDIR)"
+	$(INSTALL) -c -m 755 $(APITESTPROGS) "$(BINDIR)"
 
 uninstall: uninstall-progs
 
 uninstall-progs:
 	$(RM) $(addprefix "$(BINDIR)/", $(ALLAVPROGS))
+	$(RM) $(addprefix "$(BINDIR)/", $(APITESTPROGS))
 
 clean::
 	$(RM) $(ALLAVPROGS) $(ALLAVPROGS_G) $(CLEANSUFFIXES:%=fftools/%)

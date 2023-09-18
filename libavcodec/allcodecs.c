@@ -29,6 +29,14 @@
 #include "avcodec.h"
 #include "version.h"
 
+extern AVCodec ff_vp9_omx_decoder;
+extern AVCodec ff_hevc_omx_decoder;
+extern AVCodec ff_hevc_omx_encoder;
+extern AVCodec ff_h264_omx_decoder;
+extern AVCodec ff_h264_omx_encoder;
+extern AVCodec ff_jpeg_omx_encoder;
+extern AVCodec ff_jpeg_omx_decoder;
+
 extern AVCodec ff_a64multi_encoder;
 extern AVCodec ff_a64multi5_encoder;
 extern AVCodec ff_aasc_decoder;
@@ -765,7 +773,6 @@ extern AVCodec ff_h264_amf_encoder;
 extern AVCodec ff_h264_cuvid_decoder;
 extern AVCodec ff_h264_mf_encoder;
 extern AVCodec ff_h264_nvenc_encoder;
-extern AVCodec ff_h264_omx_encoder;
 extern AVCodec ff_h264_qsv_encoder;
 extern AVCodec ff_h264_v4l2m2m_encoder;
 extern AVCodec ff_h264_vaapi_encoder;
@@ -795,7 +802,6 @@ extern AVCodec ff_mpeg2_qsv_encoder;
 extern AVCodec ff_mpeg2_vaapi_encoder;
 extern AVCodec ff_mpeg4_cuvid_decoder;
 extern AVCodec ff_mpeg4_mediacodec_decoder;
-extern AVCodec ff_mpeg4_omx_encoder;
 extern AVCodec ff_mpeg4_v4l2m2m_encoder;
 extern AVCodec ff_vc1_cuvid_decoder;
 extern AVCodec ff_vp8_cuvid_decoder;
