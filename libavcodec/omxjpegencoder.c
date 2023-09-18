@@ -1,23 +1,22 @@
-/*
- * OMX Video encoder
- * Copyright (C) 2011 Martin Storsjo
- *
- * This file is part of FFmpeg.
- *
- * FFmpeg is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * FFmpeg is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with FFmpeg; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- */
+/* OMX Video encoder
+* Copyright (C) 2011 Martin Storsjo
+*
+* This file is part of FFmpeg.
+*
+* FFmpeg is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* FFmpeg is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with FFmpeg; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+*/
 
 #include "config.h"
 
@@ -44,6 +43,7 @@
 #include "h264.h"
 #include "internal.h"
 
+#include <OMX_CsiExt.h>
 #include "vsi_vendor_ext.h"
 static int omx_load_count = 0;
 #define TIMEOUT_MS 1000
@@ -244,13 +244,10 @@ typedef struct OMXCodecContext {
     int output_buf_size;
 
     int input_zerocopy;
-    int profile;
     int QFactor;
     int maxpts;
     int stride_padding;
 } OMXCodecContext;
-
-
 
 static void say(OMXCodecContext *s, const char *message, ...)
 {
@@ -265,10 +262,8 @@ static void say(OMXCodecContext *s, const char *message, ...)
     if (str[str_len - 1] != '\n') {
         str[str_len] = '\n';
     }
-
     av_log(s->avctx, AV_LOG_INFO, "%s", str);
 }
-
 
 static const char *dump_compression_format(OMXCodecContext *s, OMX_VIDEO_CODINGTYPE c)
 {
@@ -516,7 +511,7 @@ static int OnPortOutputChanged(OMXCodecContext *s)
     //s->plane_size = portdef.format.image.nSliceHeight;
     s->num_out_buffers = portdef.nBufferCountActual;
     err = OMX_SendCommand(s->handle, OMX_CommandPortEnable, s->out_port, NULL);
-    s->out_buffer_headers = malloc(s->num_out_buffers * sizeof(OMX_BUFFERHEADERTYPE *));
+    s->out_buffer_headers = av_mallocz(s->num_out_buffers * sizeof(OMX_BUFFERHEADERTYPE *));
     for (int i = 0; i < s->num_out_buffers; i++) {
         err = OMX_AllocateBuffer(s->handle, &s->out_buffer_headers[i],  s->out_port,  s, portdef.nBufferSize);
     }
@@ -685,6 +680,7 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
     OMX_IMAGE_PARAM_PORTFORMATTYPE imagePortFormat;
     OMX_PORT_PARAM_TYPE port;
     OMX_IMAGE_PARAM_QFACTORTYPE qfactor;
+    OMX_CSI_BUFFER_MODE_CONFIGTYPE bufferMode;
 
     OMX_ERRORTYPE err;
     int i;
@@ -743,6 +739,7 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
     portdef.nBufferSize = s->stride * avctx->height * 3 / 2;
     portdef.format.image.eColorFormat = OMX_COLOR_FormatYUV420SemiPlanar;
     portdef.eDomain = OMX_PortDomainImage;
+    portdef.nBufferCountActual = 1 + 2;
 
     iBufferSize = portdef.nBufferSize;
     err = OMX_SetParameter(s->handle, OMX_IndexParamPortDefinition, &portdef);
@@ -772,11 +769,22 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
     err = OMX_SetParameter(s->handle, OMX_IndexParamQFactor, &qfactor);
     CHECK(err);
 
+    if (s->input_zerocopy) {
+        INIT_STRUCT(bufferMode);
+        bufferMode.nPortIndex = s->in_port;
+        bufferMode.eMode = OMX_CSI_BUFFER_MODE_DMA;
+        err = OMX_SetParameter(s->handle, OMX_CSI_IndexParamBufferMode, &bufferMode);
+        if (err != OMX_ErrorNone)
+            av_log(avctx, AV_LOG_ERROR, "Unable to set DMA mode at port %d\n", s->in_port);
+        else
+            av_log(avctx, AV_LOG_INFO, "Set DMA mode at port %d\n", s->in_port);
+    }
+
     OMX_SendCommand(s->handle, OMX_CommandStateSet, OMX_StateIdle, NULL);
     wait_for_event(avctx, OMX_EventCmdComplete, OMX_CommandStateSet,  OMX_StateIdle, TIMEOUT_MS);
 
-    s->num_in_buffers = iBufferCount = 1;
-    s->in_buffer_headers = malloc(iBufferCount * sizeof(OMX_BUFFERHEADERTYPE *));
+    s->num_in_buffers = iBufferCount = 1 + 2;
+    s->in_buffer_headers = av_mallocz(iBufferCount * sizeof(OMX_BUFFERHEADERTYPE *));
     for (int i = 0; i < iBufferCount; i++) {
         OMX_AllocateBuffer(s->handle, &s->in_buffer_headers[i],  s->in_port,  s, iBufferSize);
     }
@@ -790,7 +798,7 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
         s->free_in_buffers[s->num_free_in_buffers++] = s->in_buffer_headers[i];
 
     s->num_out_buffers = 3;
-    s->out_buffer_headers = malloc(s->num_out_buffers * sizeof(OMX_BUFFERHEADERTYPE *));
+    s->out_buffer_headers = av_mallocz(s->num_out_buffers * sizeof(OMX_BUFFERHEADERTYPE *));
     for (int i = 0; i < s->num_out_buffers; i++) {
         OMX_AllocateBuffer(s->handle, &s->out_buffer_headers[i],  s->out_port,  s, iBufferSize);
     }
@@ -808,7 +816,6 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
     for (int i = 0; i < s->num_out_buffers; i++) {
         err = OMX_FillThisBuffer(s->handle, s->out_buffer_headers[i]);
     }
-
     av_log(s->avctx, AV_LOG_INFO, "finish omx_component_init_encoder\n");
     return 0;
 }
@@ -820,8 +827,7 @@ static av_cold void cleanup(OMXCodecContext *s)
     pthread_mutex_lock(&s->state_mutex);
     executing = s->state == OMX_StateExecuting;
     pthread_mutex_unlock(&s->state_mutex);
-
-    if (executing) {
+    if (executing || s->input_zerocopy) {
         OMX_SendCommand(s->handle, OMX_CommandStateSet, OMX_StateIdle, NULL);
         wait_for_state(s, OMX_StateIdle);
         OMX_SendCommand(s->handle, OMX_CommandStateSet, OMX_StateLoaded, NULL);
@@ -855,11 +861,13 @@ static av_cold void cleanup(OMXCodecContext *s)
         pthread_mutex_destroy(&s->output_mutex);
         s->mutex_cond_inited = 0;
     }
+
     av_freep(&s->in_buffer_headers);
     av_freep(&s->out_buffer_headers);
     av_freep(&s->free_in_buffers);
     av_freep(&s->done_out_buffers);
     av_freep(&s->output_buf);
+
 }
 
 static av_cold int omx_encode_init(AVCodecContext *avctx)
@@ -972,6 +980,7 @@ static int omx_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     int ret = 0;
     OMX_BUFFERHEADERTYPE *buffer;
     OMX_ERRORTYPE err;
+    AVFrame *local = NULL;
     int had_partial = 0;
 
     if (frame) {
@@ -984,66 +993,22 @@ static int omx_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
         //buffer->nFilledLen = av_image_fill_arrays(dst, linesize, buffer->pBuffer, avctx->pix_fmt, s->stride, s->plane_size, 1);
         buffer->nFilledLen = s->stride * frame->height * 3 / 2;
         buffer->nAllocLen = buffer->nFilledLen;
-        buffer->nFlags = 0;
-#if 0
-        if (s->input_zerocopy) {
-            uint8_t *src[4] = { NULL };
-            int src_linesize[4];
-            av_image_fill_arrays(src, src_linesize, frame->data[0], avctx->pix_fmt, s->stride, s->plane_size, 1);
-            if (frame->linesize[0] == src_linesize[0] &&
-                frame->linesize[1] == src_linesize[1] &&
-                frame->linesize[2] == src_linesize[2] &&
-                frame->data[1] == src[1] &&
-                frame->data[2] == src[2]) {
-                // If the input frame happens to have all planes stored contiguously,
-                // with the right strides, just clone the frame and set the OMX
-                // buffer header to point to it
+
+        if (s->stride_padding == 0) {
+            if (s->input_zerocopy) {
                 AVFrame *local = av_frame_clone(frame);
-                if (!local) {
-                    // Return the buffer to the queue so it's not lost
-                    append_buffer(&s->input_mutex, &s->input_cond, &s->num_free_in_buffers, s->free_in_buffers, buffer);
-                    return AVERROR(ENOMEM);
-                } else {
-                    buffer->pAppPrivate = local;
-                    buffer->pOutputPortPrivate = NULL;
-                    buffer->pBuffer = local->data[0];
-                    need_copy = 0;
-                }
+                buffer->pAppPrivate = local;
+                buffer->pOutputPortPrivate = NULL;
+                buffer->pBuffer = ((OMX_BUFFERHEADERTYPE *)(local->opaque))->pBuffer;
             } else {
-                // If not, we need to allocate a new buffer with the right
-                // size and copy the input frame into it.
-                uint8_t *buf = NULL;
-                int image_buffer_size = av_image_get_buffer_size(avctx->pix_fmt, s->stride, s->plane_size, 1);
-                if (image_buffer_size >= 0)
-                    buf = av_malloc(image_buffer_size);
-                if (!buf) {
-                    // Return the buffer to the queue so it's not lost
-                    append_buffer(&s->input_mutex, &s->input_cond, &s->num_free_in_buffers, s->free_in_buffers, buffer);
-                    return AVERROR(ENOMEM);
-                } else {
-                    buffer->pAppPrivate = buf;
-                    // Mark that pAppPrivate is an av_malloc'ed buffer, not an AVFrame
-                    buffer->pOutputPortPrivate = (void *) 1;
-                    buffer->pBuffer = buf;
-                    need_copy = 1;
-                    buffer->nFilledLen = av_image_fill_arrays(dst, linesize, buffer->pBuffer, avctx->pix_fmt, s->stride, s->plane_size, 1);
-                }
-            }
-        } else {
-            need_copy = 1;
-        }
-#endif
-        need_copy = 1;
-        if (need_copy) {
-            //av_image_copy(dst, linesize, (const uint8_t**) frame->data, frame->linesize, avctx->pix_fmt, avctx->width, avctx->height);
-            if (s->stride_padding == 0) {
                 memcpy(buffer->pBuffer, frame->data[0], frame->height * frame->width);
                 memcpy(buffer->pBuffer + frame->height * frame->width, frame->data[1], frame->height * frame->width / 2);
-            } else if (s->stride_padding > 0) {
-                omx_line_copy(avctx, frame, buffer);
-            } else {
-                av_log(avctx, AV_LOG_ERROR, "error stride padding size: %d\n", s->stride_padding);
             }
+        } else if (s->stride_padding > 0) {
+            omx_line_copy(avctx, frame, buffer->pBuffer);
+        } else {
+            av_log(avctx, AV_LOG_ERROR, "error stride padding size: %d\n", s->stride_padding);
+            return AVERROR_UNKNOWN;
         }
         buffer->nFlags = OMX_BUFFERFLAG_ENDOFFRAME;
         buffer->nOffset = 0;
@@ -1058,6 +1023,7 @@ static int omx_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
             err = OMX_SetConfig(s->handle, OMX_IndexConfigBrcmVideoRequestIFrame, &config);
             if (err != OMX_ErrorNone) {
                 av_log(avctx, AV_LOG_ERROR, "OMX_SetConfig(RequestIFrame) failed: %x\n", err);
+                return AVERROR_UNKNOWN;
             }
 #else
             OMX_CONFIG_INTRAREFRESHVOPTYPE config = {0, };
@@ -1067,6 +1033,7 @@ static int omx_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
             err = OMX_SetConfig(s->handle, OMX_IndexConfigVideoIntraVOPRefresh, &config);
             if (err != OMX_ErrorNone) {
                 av_log(avctx, AV_LOG_ERROR, "OMX_SetConfig(IntraVOPRefresh) failed: %x\n", err);
+                return AVERROR_UNKNOWN;
             }
 #endif
         }
@@ -1186,7 +1153,6 @@ end:
 static av_cold int omx_encode_end(AVCodecContext *avctx)
 {
     OMXCodecContext *s = avctx->priv_data;
-
     cleanup(s);
     return 0;
 }
@@ -1197,7 +1163,7 @@ static av_cold int omx_encode_end(AVCodecContext *avctx)
 static const AVOption options_jpeg[] = {
     { "omx_libname", "OpenMAX library name", OFFSET(libname), AV_OPT_TYPE_STRING, { 0 }, 0, 0, VDE },
     { "omx_libprefix", "OpenMAX library prefix", OFFSET(libprefix), AV_OPT_TYPE_STRING, { 0 }, 0, 0, VDE },
-    { "zerocopy", "Try to avoid copying input frames if possible", OFFSET(input_zerocopy), AV_OPT_TYPE_INT, { .i64 = CONFIG_OMX_RPI }, 0, 0, VE },
+    { "zerocopy", "Try to avoid copying input frames if possible", OFFSET(input_zerocopy), AV_OPT_TYPE_INT, { .i64 = CONFIG_OMX_RPI }, 0, 1, VE },
     { "QFactor",  "Set the encoding QFactor", OFFSET(QFactor), AV_OPT_TYPE_INT,   {2}, 0, 10, VE},
     { NULL }
 };

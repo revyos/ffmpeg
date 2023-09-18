@@ -32,6 +32,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <fcntl.h>
+#include <sys/mman.h>
 
 #include "libavutil/avstring.h"
 #include "libavutil/avutil.h"
@@ -44,6 +46,7 @@
 #include "h264.h"
 #include "internal.h"
 
+#include <OMX_CsiExt.h>
 #include "vsi_vendor_ext.h"
 static int omx_load_count = 0;
 
@@ -471,7 +474,6 @@ static void dump_portdef(OMXCodecContext *s, OMX_PARAM_PORTDEFINITIONTYPE *portd
     }
 }
 
-
 static void append_buffer(pthread_mutex_t *mutex, pthread_cond_t *cond,
                           int *array_size, OMX_BUFFERHEADERTYPE **array,
                           OMX_BUFFERHEADERTYPE *buffer)
@@ -636,6 +638,7 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
     OMX_VIDEO_PARAM_PORTFORMATTYPE video_port_format = { 0 };
     OMX_VIDEO_PARAM_BITRATETYPE vid_param_bitrate = { 0 };
     OMX_VIDEO_PARAM_QUANTIZATIONTYPE vid_param_quantization = { 0 };
+    OMX_CSI_BUFFER_MODE_CONFIGTYPE bufferMode = {0};
     OMX_ERRORTYPE err;
     int i;
 
@@ -773,7 +776,6 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
         av_log(avctx, AV_LOG_INFO, "Qp for I frames: %d, Qp for P frames: %d\n", vid_param_quantization.nQpI,
                vid_param_quantization.nQpP);
 
-
     if (avctx->codec->id == AV_CODEC_ID_H264) {
         OMX_VIDEO_PARAM_AVCTYPE avc = { 0 };
         INIT_STRUCT(avc);
@@ -782,6 +784,7 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
         CHECK(err);
         avc.nBFrames = 0;
         avc.nPFrames = (s->gop_size) ? (s->gop_size - 1) : (avctx->gop_size - 1);
+        s->gop_size = avc.nPFrames + 1;
         avc.eProfile = OMX_VIDEO_AVCProfileMain;
         avc.eLevel = OMX_VIDEO_AVCLevel42;
         switch (s->profile == FF_PROFILE_UNKNOWN ? avctx->profile : s->profile) {
@@ -859,6 +862,7 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
             break;
         default:
             av_log(avctx, AV_LOG_ERROR, "[Error] OMX VIDEO AVCLevel\n");
+            return AVERROR_UNKNOWN;
         }
         err = OMX_SetParameter(s->handle, OMX_IndexParamVideoAvc, &avc);
         CHECK(err);
@@ -875,6 +879,7 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
         err = OMX_GetParameter(s->handle, OMX_IndexParamVideoHevc, &hevc);
         CHECK(err);
         hevc.nPFrames = (s->gop_size) ? (s->gop_size - 1) : (avctx->gop_size - 1);
+        s->gop_size = hevc.nPFrames + 1;
         hevc.eLevel = OMX_VIDEO_HEVCLevel51;
         hevc.eProfile = OMX_VIDEO_HEVCProfileMain;
         switch (s->profile == FF_PROFILE_UNKNOWN ? avctx->profile : s->profile) {
@@ -937,6 +942,7 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
             break;
         default:
             av_log(avctx, AV_LOG_ERROR, "[ERROR] OMX_VIDEO_HEVCLevel\n");
+            return AVERROR_UNKNOWN;
         }
 
         err = OMX_SetParameter(s->handle, OMX_IndexParamVideoHevc, &hevc);
@@ -947,6 +953,17 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
             av_log(avctx, AV_LOG_INFO, "1 I frame and %d P frame(s) in a gop\n", hevc.nPFrames);
         else
             av_log(avctx, AV_LOG_INFO, "All intra coding\n");
+    }
+    if (s->input_zerocopy) {
+        INIT_STRUCT(bufferMode);
+        bufferMode.nPortIndex = s->in_port;
+        bufferMode.eMode = OMX_CSI_BUFFER_MODE_DMA;
+        err = OMX_SetParameter(s->handle, OMX_CSI_IndexParamBufferMode, &bufferMode);
+        if (err != OMX_ErrorNone) {
+            av_log(avctx, AV_LOG_ERROR, "Unable to set DMA mode at port %d\n", s->in_port);
+            return AVERROR_UNKNOWN;
+        } else
+            av_log(avctx, AV_LOG_INFO, "Set DMA mode at port %d\n", s->in_port);
     }
 
     err = OMX_SendCommand(s->handle, OMX_CommandStateSet, OMX_StateIdle, NULL);
@@ -959,10 +976,7 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
     if (!s->in_buffer_headers || !s->free_in_buffers || !s->out_buffer_headers || !s->done_out_buffers)
         return AVERROR(ENOMEM);
     for (i = 0; i < s->num_in_buffers && err == OMX_ErrorNone; i++) {
-        if (s->input_zerocopy)
-            err = OMX_UseBuffer(s->handle, &s->in_buffer_headers[i], s->in_port, s, in_port_params.nBufferSize, NULL);
-        else
-            err = OMX_AllocateBuffer(s->handle, &s->in_buffer_headers[i],  s->in_port,  s, in_port_params.nBufferSize);
+        err = OMX_AllocateBuffer(s->handle, &s->in_buffer_headers[i],  s->in_port,  s, in_port_params.nBufferSize);
         if (err == OMX_ErrorNone)
             s->in_buffer_headers[i]->pAppPrivate = s->in_buffer_headers[i]->pOutputPortPrivate = NULL;
     }
@@ -984,14 +998,17 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
         return AVERROR_UNKNOWN;
     }
 
-    for (i = 0; i < s->num_out_buffers && err == OMX_ErrorNone; i++)
+    for (i = 0; i < s->num_out_buffers && err == OMX_ErrorNone; i++) {
         err = OMX_FillThisBuffer(s->handle, s->out_buffer_headers[i]);
+    }
     if (err != OMX_ErrorNone) {
         for (; i < s->num_out_buffers; i++)
             s->done_out_buffers[s->num_done_out_buffers++] = s->out_buffer_headers[i];
     }
-    for (i = 0; i < s->num_in_buffers; i++)
+
+    for (i = 0; i < s->num_in_buffers; i++) {
         s->free_in_buffers[s->num_free_in_buffers++] = s->in_buffer_headers[i];
+    }
     return err != OMX_ErrorNone ? AVERROR_UNKNOWN : 0;
 }
 
@@ -1139,15 +1156,15 @@ fail:
     return ret;
 }
 
-static int omx_line_copy(AVCodecContext *avctx, const AVFrame *frame, OMX_BUFFERHEADERTYPE *buffer)
+static int omx_line_copy(AVCodecContext *avctx, const AVFrame *frame, uint8_t *address)
 {
     OMXCodecContext *s = avctx->priv_data;
-    memset(buffer->pBuffer, 0, s->stride * frame->height * 3 / 2);
+    memset(address, 0, s->stride * frame->height * 3 / 2);
     for (int i = 0; i < frame->height; i++) {
-        memcpy(buffer->pBuffer + i * s->stride, frame->data[0] + i * frame->width, frame->width);
+        memcpy(address + i * s->stride, frame->data[0] + i * frame->width, frame->width);
     }
     for (int i = 0; i < frame->height / 2; i++) {
-        memcpy(buffer->pBuffer + s->stride * frame->height + i * s->stride, frame->data[1] + +i * frame->width, frame->width);
+        memcpy(address + s->stride * frame->height + i * s->stride, frame->data[1] + +i * frame->width, frame->width);
     }
     return 0;
 }
@@ -1168,68 +1185,24 @@ static int omx_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
         buffer = get_buffer(&s->input_mutex, &s->input_cond,
                             &s->num_free_in_buffers, s->free_in_buffers, 1);
 
-        //buffer->nFilledLen = av_image_fill_arrays(dst, linesize, buffer->pBuffer, avctx->pix_fmt, s->stride, s->plane_size, 1);
         buffer->nFilledLen = s->stride * frame->height * 3 / 2;
         buffer->nAllocLen = buffer->nFilledLen;
-        buffer->nFlags = 0;
 
-        if (s->input_zerocopy) {
-            uint8_t *src[4] = { NULL };
-            int src_linesize[4];
-            av_image_fill_arrays(src, src_linesize, frame->data[0], avctx->pix_fmt, s->stride, s->plane_size, 1);
-            if (frame->linesize[0] == src_linesize[0] &&
-                frame->linesize[1] == src_linesize[1] &&
-                frame->linesize[2] == src_linesize[2] &&
-                frame->data[1] == src[1] &&
-                frame->data[2] == src[2]) {
-                // If the input frame happens to have all planes stored contiguously,
-                // with the right strides, just clone the frame and set the OMX
-                // buffer header to point to it
+        if (s->stride_padding == 0) {
+            if (s->input_zerocopy) {
                 AVFrame *local = av_frame_clone(frame);
-                if (!local) {
-                    // Return the buffer to the queue so it's not lost
-                    append_buffer(&s->input_mutex, &s->input_cond, &s->num_free_in_buffers, s->free_in_buffers, buffer);
-                    return AVERROR(ENOMEM);
-                } else {
-                    buffer->pAppPrivate = local;
-                    buffer->pOutputPortPrivate = NULL;
-                    buffer->pBuffer = local->data[0];
-                    need_copy = 0;
-                }
+                buffer->pAppPrivate = local;
+                buffer->pOutputPortPrivate = NULL;
+                buffer->pBuffer = ((OMX_BUFFERHEADERTYPE *)(local->opaque))->pBuffer;
             } else {
-                // If not, we need to allocate a new buffer with the right
-                // size and copy the input frame into it.
-                uint8_t *buf = NULL;
-                int image_buffer_size = av_image_get_buffer_size(avctx->pix_fmt, s->stride, s->plane_size, 1);
-                if (image_buffer_size >= 0)
-                    buf = av_malloc(image_buffer_size);
-                if (!buf) {
-                    // Return the buffer to the queue so it's not lost
-                    append_buffer(&s->input_mutex, &s->input_cond, &s->num_free_in_buffers, s->free_in_buffers, buffer);
-                    return AVERROR(ENOMEM);
-                } else {
-                    buffer->pAppPrivate = buf;
-                    // Mark that pAppPrivate is an av_malloc'ed buffer, not an AVFrame
-                    buffer->pOutputPortPrivate = (void *) 1;
-                    buffer->pBuffer = buf;
-                    need_copy = 1;
-                    buffer->nFilledLen = av_image_fill_arrays(dst, linesize, buffer->pBuffer, avctx->pix_fmt, s->stride, s->plane_size, 1);
-                }
-            }
-        } else {
-            need_copy = 1;
-        }
-
-        if (need_copy) {
-            //av_image_copy(dst, linesize, (const uint8_t**) frame->data, frame->linesize, avctx->pix_fmt, avctx->width, avctx->height);
-            if (s->stride_padding == 0) {
                 memcpy(buffer->pBuffer, frame->data[0], frame->height * frame->width);
                 memcpy(buffer->pBuffer + frame->height * frame->width, frame->data[1], frame->height * frame->width / 2);
-            } else if (s->stride_padding > 0) {
-                omx_line_copy(avctx, frame, buffer);
-            } else {
-                av_log(avctx, AV_LOG_ERROR, "error stride padding size: %d\n", s->stride_padding);
             }
+        } else if (s->stride_padding > 0) {
+            omx_line_copy(avctx, frame, buffer->pBuffer);
+        } else {
+            av_log(avctx, AV_LOG_ERROR, "error stride padding size: %d\n", s->stride_padding);
+            return AVERROR_UNKNOWN;
         }
         buffer->nFlags = OMX_BUFFERFLAG_ENDOFFRAME;
         buffer->nOffset = 0;
@@ -1244,6 +1217,7 @@ static int omx_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
             err = OMX_SetConfig(s->handle, OMX_IndexConfigBrcmVideoRequestIFrame, &config);
             if (err != OMX_ErrorNone) {
                 av_log(avctx, AV_LOG_ERROR, "OMX_SetConfig(RequestIFrame) failed: %x\n", err);
+                return AVERROR_UNKNOWN;
             }
 #else
             OMX_CONFIG_INTRAREFRESHVOPTYPE config = {0, };
@@ -1253,6 +1227,7 @@ static int omx_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
             err = OMX_SetConfig(s->handle, OMX_IndexConfigVideoIntraVOPRefresh, &config);
             if (err != OMX_ErrorNone) {
                 av_log(avctx, AV_LOG_ERROR, "OMX_SetConfig(IntraVOPRefresh) failed: %x\n", err);
+                return AVERROR_UNKNOWN;
             }
 #endif
         }
@@ -1362,7 +1337,6 @@ end:
 static av_cold int omx_encode_end(AVCodecContext *avctx)
 {
     OMXCodecContext *s = avctx->priv_data;
-
     cleanup(s);
     return 0;
 }
@@ -1373,7 +1347,7 @@ static av_cold int omx_encode_end(AVCodecContext *avctx)
 static const AVOption options[] = {
     { "omx_libname", "OpenMAX library name", OFFSET(libname), AV_OPT_TYPE_STRING, { 0 }, 0, 0, VDE },
     { "omx_libprefix", "OpenMAX library prefix", OFFSET(libprefix), AV_OPT_TYPE_STRING, { 0 }, 0, 0, VDE },
-    { "zerocopy", "Try to avoid copying input frames if possible", OFFSET(input_zerocopy), AV_OPT_TYPE_INT, { .i64 = CONFIG_OMX_RPI }, 0, 0, VE },
+    { "zerocopy", "Try to avoid copying input frames if possible", OFFSET(input_zerocopy), AV_OPT_TYPE_INT, { .i64 = CONFIG_OMX_RPI }, 0, 1, VE },
     { "gop_size",  "Set the encoding gop_size", OFFSET(gop_size), AV_OPT_TYPE_INT,   { .i64 = 12 }, 0, OMX_VIDEO_AVCLevelMax, VE, "gop_size" },
     { "bitrate",  "Set the encoding bitrate", OFFSET(bitrate), AV_OPT_TYPE_INT,   { .i64 = 10000000 }, 0, OMX_VIDEO_AVCLevelMax, VE, "bitrate" },
     { "QpI",  "Set the encoding Qp for I frames", OFFSET(QpI), AV_OPT_TYPE_INT,   { .i64 = 27 }, 0, 51, VE, "QpI" },
@@ -1405,7 +1379,7 @@ static const AVOption options[] = {
 static const AVOption options_hevc[] = {
     { "omx_libname", "OpenMAX library name", OFFSET(libname), AV_OPT_TYPE_STRING, { 0 }, 0, 0, VDE },
     { "omx_libprefix", "OpenMAX library prefix", OFFSET(libprefix), AV_OPT_TYPE_STRING, { 0 }, 0, 0, VDE },
-    { "zerocopy", "Try to avoid copying input frames if possible", OFFSET(input_zerocopy), AV_OPT_TYPE_INT, { .i64 = CONFIG_OMX_RPI }, 0, 0, VE },
+    { "zerocopy", "Try to avoid copying input frames if possible", OFFSET(input_zerocopy), AV_OPT_TYPE_INT, { .i64 = CONFIG_OMX_RPI }, 0, 1, VE },
     { "gop_size",  "Set the encoding gop_size", OFFSET(gop_size), AV_OPT_TYPE_INT,   { .i64 = 12 }, 0, OMX_VIDEO_AVCLevelMax, VE, "gop_size" },
     { "bitrate",  "Set the encoding bitrate", OFFSET(bitrate), AV_OPT_TYPE_INT,   { .i64 = 10000000 }, 0, OMX_VIDEO_AVCLevelMax, VE, "bitrate" },
     { "QpI",  "Set the encoding Qp for I frames", OFFSET(QpI), AV_OPT_TYPE_INT,   { .i64 = 27 }, 0, 51, VE, "QpI" },
