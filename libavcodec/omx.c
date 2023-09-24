@@ -48,7 +48,7 @@
 
 #include <OMX_CsiExt.h>
 #include "vsi_vendor_ext.h"
-static int omx_load_count = 0;
+extern int omx_load_count;
 
 #ifdef OMX_SKIP64BIT
 static OMX_TICKS to_omx_ticks(int64_t value)

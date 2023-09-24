@@ -66,7 +66,7 @@
 #include "hwconfig.h"
 #include "internal.h"
 #include <OMX_CsiExt.h>
-static int omx_load_count = 0;
+extern int omx_load_count;
 #define DEBUG_NO_OMX
 
 #define TIMEOUT_MS 1000
