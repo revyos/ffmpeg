@@ -1,6 +1,8 @@
+From 80c7e6585a3be77a26d94e6644db2f5b708cdb8f Mon Sep 17 00:00:00 2001
 From: Michael Niedermayer <michael@niedermayer.cc>
 Date: Tue, 12 Jan 2021 20:36:35 +0100
-Subject: avcodec/exr: skip bottom clearing loop when its outside the image
+Subject: [PATCH 05/17] avcodec/exr: skip bottom clearing loop when its outside
+ the image
 
 Fixes: signed integer overflow: 1633771809 * 32960 cannot be represented in type 'int'
 Fixes: 26532/clusterfuzz-testcase-minimized-ffmpeg_AV_CODEC_ID_EXR_fuzzer-5613925708857344
@@ -12,7 +14,7 @@ Signed-off-by: Michael Niedermayer <michael@niedermayer.cc>
  1 file changed, 9 insertions(+), 7 deletions(-)
 
 diff --git a/libavcodec/exr.c b/libavcodec/exr.c
-index 6a0700c..9dc59f7 100644
+index 6a0700cc10..9dc59f72de 100644
 --- a/libavcodec/exr.c
 +++ b/libavcodec/exr.c
 @@ -1654,7 +1654,7 @@ static int decode_frame(AVCodecContext *avctx, void *data,
@@ -47,3 +49,6 @@ index 6a0700c..9dc59f7 100644
  
      picture->pict_type = AV_PICTURE_TYPE_I;
      *got_frame = 1;
+-- 
+2.39.2
+

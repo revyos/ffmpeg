@@ -1,6 +1,7 @@
+From a88e22d2e6ff153280caf562260e8a06c43ce68a Mon Sep 17 00:00:00 2001
 From: Michael Niedermayer <michael@niedermayer.cc>
 Date: Sat, 24 Oct 2020 22:21:48 +0200
-Subject: avcodec/exr: Check ymin vs. h
+Subject: [PATCH 04/17] avcodec/exr: Check ymin vs. h
 
 Fixes: out of array access
 Fixes: 26532/clusterfuzz-testcase-minimized-ffmpeg_AV_CODEC_ID_EXR_fuzzer-5613925708857344
@@ -13,7 +14,7 @@ Signed-off-by: Michael Niedermayer <michael@niedermayer.cc>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/libavcodec/exr.c b/libavcodec/exr.c
-index 68d5bef..6a0700c 100644
+index 68d5befa40..6a0700cc10 100644
 --- a/libavcodec/exr.c
 +++ b/libavcodec/exr.c
 @@ -1794,7 +1794,7 @@ static int decode_frame(AVCodecContext *avctx, void *data,
@@ -25,3 +26,6 @@ index 68d5bef..6a0700c 100644
              memset(ptr, 0, out_line_size);
              ptr += picture->linesize[i];
          }
+-- 
+2.39.2
+

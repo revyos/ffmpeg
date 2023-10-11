@@ -1,6 +1,7 @@
+From 3246a0e51f6c336d1a4d3154bfd89932f0b879b5 Mon Sep 17 00:00:00 2001
 From: Jun Zhao <barryjzhao@tencent.com>
 Date: Sun, 12 Jul 2020 13:48:48 +0800
-Subject: lavf/srt: fix build fail when used the libsrt 1.4.1
+Subject: [PATCH 07/17] lavf/srt: fix build fail when used the libsrt 1.4.1
 
 libsrt changed the:
 SRTO_SMOOTHER   -> SRTO_CONGESTION
@@ -17,7 +18,7 @@ Signed-off-by: Jun Zhao <barryjzhao@tencent.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/libavformat/libsrt.c b/libavformat/libsrt.c
-index a569209..4025b24 100644
+index a569209318..4025b24976 100644
 --- a/libavformat/libsrt.c
 +++ b/libavformat/libsrt.c
 @@ -314,8 +314,12 @@ static int libsrt_set_options_pre(URLContext *h, int fd)
@@ -45,3 +46,6 @@ index a569209..4025b24 100644
          (s->messageapi >= 0 && libsrt_setsockopt(h, fd, SRTO_MESSAGEAPI, "SRTO_MESSAGEAPI", &s->messageapi, sizeof(s->messageapi)) < 0) ||
          (s->payload_size >= 0 && libsrt_setsockopt(h, fd, SRTO_PAYLOADSIZE, "SRTO_PAYLOADSIZE", &s->payload_size, sizeof(s->payload_size)) < 0) ||
          ((h->flags & AVIO_FLAG_WRITE) && libsrt_setsockopt(h, fd, SRTO_SENDER, "SRTO_SENDER", &yes, sizeof(yes)) < 0)) {
+-- 
+2.39.2
+

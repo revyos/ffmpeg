@@ -1,6 +1,7 @@
+From ce0767d18ff27665e5e22171f842ccbd53c6906e Mon Sep 17 00:00:00 2001
 From: Anton Khirnov <anton@khirnov.net>
 Date: Fri, 11 Sep 2020 19:32:43 +0200
-Subject: opusdec: do not fail when LBRR frames are present
+Subject: [PATCH 10/17] opusdec: do not fail when LBRR frames are present
 
 Decode and discard them.
 
@@ -15,7 +16,7 @@ Signed-off-by: Anton Khirnov <anton@khirnov.net>
  3 files changed, 27 insertions(+), 7 deletions(-)
 
 diff --git a/libavcodec/opus_silk.c b/libavcodec/opus_silk.c
-index 2fcbf3b..913053c 100644
+index 2fcbf3b9d3..913053c5e2 100644
 --- a/libavcodec/opus_silk.c
 +++ b/libavcodec/opus_silk.c
 @@ -506,7 +506,8 @@ static inline void silk_decode_excitation(SilkContext *s, OpusRangeCoder *rc,
@@ -73,7 +74,7 @@ index 2fcbf3b..913053c 100644
          /* reset the side channel if it is not coded */
          if (s->midonly && s->frame[1].coded)
 diff --git a/libavcodec/opustab.c b/libavcodec/opustab.c
-index fb340e0..64070f8 100644
+index fb340e07e8..64070f8299 100644
 --- a/libavcodec/opustab.c
 +++ b/libavcodec/opustab.c
 @@ -26,6 +26,9 @@ const uint8_t ff_opus_default_coupled_streams[] = { 0, 1, 1, 2, 2, 2, 2, 3 };
@@ -87,7 +88,7 @@ index fb340e0..64070f8 100644
      256,   7,   9,  10,  11,  12,  22,  46,  54,  55,  56,  59,  82, 174, 197, 200,
      201, 202, 210, 234, 244, 245, 246, 247, 249, 256
 diff --git a/libavcodec/opustab.h b/libavcodec/opustab.h
-index bce5a42..892126b 100644
+index bce5a42830..892126bb23 100644
 --- a/libavcodec/opustab.h
 +++ b/libavcodec/opustab.h
 @@ -31,6 +31,9 @@ extern const uint8_t  ff_celt_band_end[];
@@ -100,3 +101,6 @@ index bce5a42..892126b 100644
  extern const uint16_t ff_silk_model_stereo_s1[];
  extern const uint16_t ff_silk_model_stereo_s2[];
  extern const uint16_t ff_silk_model_stereo_s3[];
+-- 
+2.39.2
+

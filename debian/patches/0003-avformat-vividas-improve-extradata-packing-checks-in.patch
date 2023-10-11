@@ -1,6 +1,8 @@
+From 7847660c4b86152371a80da30a62ef4a4dde151d Mon Sep 17 00:00:00 2001
 From: Michael Niedermayer <michael@niedermayer.cc>
 Date: Wed, 28 Oct 2020 20:11:54 +0100
-Subject: avformat/vividas: improve extradata packing checks in track_header()
+Subject: [PATCH 03/17] avformat/vividas: improve extradata packing checks in
+ track_header()
 
 Fixes: out of array accesses
 Fixes: 26622/clusterfuzz-testcase-minimized-ffmpeg_dem_VIVIDAS_fuzzer-6581200338288640
@@ -12,7 +14,7 @@ Signed-off-by: Michael Niedermayer <michael@niedermayer.cc>
  1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/libavformat/vividas.c b/libavformat/vividas.c
-index b0f9f35..828fbed 100644
+index b0f9f35ac2..828fbed998 100644
 --- a/libavformat/vividas.c
 +++ b/libavformat/vividas.c
 @@ -28,6 +28,7 @@
@@ -64,3 +66,6 @@ index b0f9f35..828fbed 100644
                  offset += data_len[j];
              }
  
+-- 
+2.39.2
+

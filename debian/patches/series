@@ -8,3 +8,11 @@
 0008-avformat-libsrt-fix-cleanups-on-failed-libsrt_open-a.patch
 0009-Fix-build-on-powerpc-and-ppc64.patch
 0010-opusdec-do-not-fail-when-LBRR-frames-are-present.patch
+0011-fix-mips64_cpu_detection.patch
+0012-fix-compile-cpu.c-not-find-sysctl.h-file-error.patch
+0013-Add-OMX-CODECS.patch
+0014-OMX-CODECS-Performance-Enhanced.patch
+0015-OMX-CODECS-Stability-Enhanced.patch
+0016-Fix-OMX-Decoders-For-Dynamic-Resolution-Videos.patch
+0017-Improve-the-OMX-encoders-for-lower-CPU-usage.patch
+

@@ -1,0 +1,26 @@
+From f7d2fc5de6af74ef48836270f4385185cb81a595 Mon Sep 17 00:00:00 2001
+From: Han Gao <gaohan@iscas.ac.cn>
+Date: Thu, 12 Oct 2023 04:05:24 +0800
+Subject: [PATCH 12/17] fix: compile-cpu.c-not-find-sysctl.h-file-error
+
+Signed-off-by: Han Gao <gaohan@iscas.ac.cn>
+---
+ libavutil/cpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libavutil/cpu.c b/libavutil/cpu.c
+index 6548cc3042..98a84da306 100644
+--- a/libavutil/cpu.c
++++ b/libavutil/cpu.c
+@@ -41,7 +41,7 @@
+ #include <sys/param.h>
+ #endif
+ #include <sys/types.h>
+-#include <sys/sysctl.h>
++#include <linux/sysctl.h>
+ #endif
+ #if HAVE_UNISTD_H
+ #include <unistd.h>
+-- 
+2.39.2
+

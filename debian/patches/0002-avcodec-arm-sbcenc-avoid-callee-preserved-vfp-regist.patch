@@ -1,6 +1,8 @@
+From 67ad00fe9cb682a37da932fc2aad2411f4e4091a Mon Sep 17 00:00:00 2001
 From: James Cowgill <jcowgill@debian.org>
 Date: Sun, 11 Aug 2019 16:50:56 +0100
-Subject: avcodec/arm/sbcenc: avoid callee preserved vfp registers
+Subject: [PATCH 02/17] avcodec/arm/sbcenc: avoid callee preserved vfp
+ registers
 
 When compiling FFmpeg with GCC-9, some very random segfaults were
 observed in code which had previously called down into the SBC encoder
@@ -21,11 +23,11 @@ registers, it should have no performance impact.
 
 Signed-off-by: James Cowgill <jcowgill@debian.org>
 ---
- libavcodec/arm/sbcdsp_neon.S | 220 +++++++++++++++++++++----------------------
+ libavcodec/arm/sbcdsp_neon.S | 220 +++++++++++++++++------------------
  1 file changed, 110 insertions(+), 110 deletions(-)
 
 diff --git a/libavcodec/arm/sbcdsp_neon.S b/libavcodec/arm/sbcdsp_neon.S
-index d83d21d..914abfb 100644
+index d83d21d202..914abfb6cc 100644
 --- a/libavcodec/arm/sbcdsp_neon.S
 +++ b/libavcodec/arm/sbcdsp_neon.S
 @@ -38,49 +38,49 @@ function ff_sbc_analyze_4_neon, export=1
@@ -285,3 +287,6 @@ index d83d21d..914abfb 100644
  
          vst1.32         {d0, d1, d2, d3}, [r1, :128]
  
+-- 
+2.39.2
+
