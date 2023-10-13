@@ -4,3 +4,4 @@ usr/share/ffmpeg/*.ffpreset
 usr/share/ffmpeg/*.xsd
 RELEASE_NOTES						usr/share/doc/ffmpeg
 debian/standard/tools/qt-faststart	usr/bin
+usr/bin/api-dec-test

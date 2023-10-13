@@ -92,6 +92,7 @@ Build-Depends:
  libopenal-dev,
 # --enable-omx
  libomxil-bellagio-dev,
+ libomxil-bellagio-bin,
 # --enable-libopencore_amrnb
  libopencore-amrnb-dev,
 # --enable-libopencore_amrwb
