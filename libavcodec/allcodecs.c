@@ -34,8 +34,6 @@ extern AVCodec ff_hevc_omx_decoder;
 extern AVCodec ff_hevc_omx_encoder;
 extern AVCodec ff_h264_omx_decoder;
 extern AVCodec ff_h264_omx_encoder;
-extern AVCodec ff_jpeg_omx_encoder;
-extern AVCodec ff_jpeg_omx_decoder;
 
 extern AVCodec ff_a64multi_encoder;
 extern AVCodec ff_a64multi5_encoder;
