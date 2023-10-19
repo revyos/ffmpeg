@@ -1,7 +1,7 @@
 From 7847660c4b86152371a80da30a62ef4a4dde151d Mon Sep 17 00:00:00 2001
 From: Michael Niedermayer <michael@niedermayer.cc>
 Date: Wed, 28 Oct 2020 20:11:54 +0100
-Subject: [PATCH 03/17] avformat/vividas: improve extradata packing checks in
+Subject: [PATCH 03/21] avformat/vividas: improve extradata packing checks in
  track_header()
 
 Fixes: out of array accesses

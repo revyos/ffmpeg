@@ -1,7 +1,7 @@
 From 36ec1d5ae000cad8a8d1f2ef30523d965c906908 Mon Sep 17 00:00:00 2001
 From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 Date: Tue, 19 Jan 2021 20:35:29 +0100
-Subject: [PATCH 09/17] Fix build on powerpc and ppc64
+Subject: [PATCH 09/21] Fix build on powerpc and ppc64
 
 ---
  libswscale/ppc/yuv2rgb_altivec.c | 10 ++++++++++

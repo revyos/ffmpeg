@@ -1,7 +1,7 @@
 From a88e22d2e6ff153280caf562260e8a06c43ce68a Mon Sep 17 00:00:00 2001
 From: Michael Niedermayer <michael@niedermayer.cc>
 Date: Sat, 24 Oct 2020 22:21:48 +0200
-Subject: [PATCH 04/17] avcodec/exr: Check ymin vs. h
+Subject: [PATCH 04/21] avcodec/exr: Check ymin vs. h
 
 Fixes: out of array access
 Fixes: 26532/clusterfuzz-testcase-minimized-ffmpeg_AV_CODEC_ID_EXR_fuzzer-5613925708857344

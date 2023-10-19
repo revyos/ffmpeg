@@ -1,7 +1,7 @@
-From dc20b4431a3805f7b9ddf476375bf449a5c447ec Mon Sep 17 00:00:00 2001
+From d597a6e934f01156f4bbe4e50e51a358fc7818c3 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E6=81=92=E7=95=85?= <dongkaiyuan.dky@alibaba-inc.com>
 Date: Sun, 24 Sep 2023 21:45:25 +0000
-Subject: [PATCH 15/17] OMX CODECS Stability Enhanced
+Subject: [PATCH 15/21] OMX CODECS Stability Enhanced
 
 ---
  libavcodec/omx.c            |  2 +-
@@ -13,12 +13,12 @@ Subject: [PATCH 15/17] OMX CODECS Stability Enhanced
  mode change 100755 => 100644 libavcodec/omxjpegdecoder.c
 
 diff --git a/libavcodec/omx.c b/libavcodec/omx.c
-index ce88de2950..e2a7210abe 100644
+index 4c1c838b14..1b3c02badf 100644
 --- a/libavcodec/omx.c
 +++ b/libavcodec/omx.c
 @@ -48,7 +48,7 @@
  
- #include <omxil/OMX_CsiExt.h>
+ #include <OMX_CsiExt.h>
  #include "vsi_vendor_ext.h"
 -static int omx_load_count = 0;
 +extern int omx_load_count;
@@ -28,12 +28,12 @@ index ce88de2950..e2a7210abe 100644
 diff --git a/libavcodec/omxdecoder.c b/libavcodec/omxdecoder.c
 old mode 100755
 new mode 100644
-index 74eaed7fc0..2d43d4496f
+index 3243ab13db..c21240abe7
 --- a/libavcodec/omxdecoder.c
 +++ b/libavcodec/omxdecoder.c
 @@ -70,7 +70,7 @@
  
- #include <omxil/OMX_CsiExt.h>
+ #include <OMX_CsiExt.h>
  #include "vsi_vendor_ext.h"
 -static int omx_load_count = 0;
 +int omx_load_count = 0;
@@ -201,25 +201,25 @@ index 74eaed7fc0..2d43d4496f
 diff --git a/libavcodec/omxjpegdecoder.c b/libavcodec/omxjpegdecoder.c
 old mode 100755
 new mode 100644
-index 400d24d7dd..0f2a1761ac
+index d3d341d208..3aa32434ca
 --- a/libavcodec/omxjpegdecoder.c
 +++ b/libavcodec/omxjpegdecoder.c
 @@ -66,7 +66,7 @@
  #include "hwconfig.h"
  #include "internal.h"
- #include <omxil/OMX_CsiExt.h>
+ #include <OMX_CsiExt.h>
 -static int omx_load_count = 0;
 +extern int omx_load_count;
  #define DEBUG_NO_OMX
  
  #define TIMEOUT_MS 1000
 diff --git a/libavcodec/omxjpegencoder.c b/libavcodec/omxjpegencoder.c
-index ed063b96e6..8f0ba501d0 100644
+index 1464c0d613..8b67c225ac 100644
 --- a/libavcodec/omxjpegencoder.c
 +++ b/libavcodec/omxjpegencoder.c
 @@ -45,7 +45,7 @@
  
- #include <omxil/OMX_CsiExt.h>
+ #include <OMX_CsiExt.h>
  #include "vsi_vendor_ext.h"
 -static int omx_load_count = 0;
 +extern int omx_load_count;

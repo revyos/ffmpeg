@@ -1,14 +1,14 @@
-From f3609fc5d51236ef01fac1eac54ca2940920c81a Mon Sep 17 00:00:00 2001
+From d9e07dd5531439467c2dc7f62442aba582be9751 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E6=81=92=E7=95=85?= <dongkaiyuan.dky@alibaba-inc.com>
 Date: Mon, 25 Sep 2023 20:55:32 +0000
-Subject: [PATCH 16/17] Fix OMX Decoders For Dynamic Resolution Videos
+Subject: [PATCH 16/21] Fix OMX Decoders For Dynamic Resolution Videos
 
 ---
  libavcodec/omxdecoder.c | 21 +++++++++++++++++++--
  1 file changed, 19 insertions(+), 2 deletions(-)
 
 diff --git a/libavcodec/omxdecoder.c b/libavcodec/omxdecoder.c
-index 2d43d4496f..5e309cd243 100644
+index c21240abe7..55e7f68767 100644
 --- a/libavcodec/omxdecoder.c
 +++ b/libavcodec/omxdecoder.c
 @@ -1026,6 +1026,7 @@ static int copyNV12toDst(OMXCodecDecoderContext *s, AVFrame *avframe, OMX_BUFFER

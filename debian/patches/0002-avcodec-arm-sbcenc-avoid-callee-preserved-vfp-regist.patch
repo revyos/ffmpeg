@@ -1,7 +1,7 @@
 From 67ad00fe9cb682a37da932fc2aad2411f4e4091a Mon Sep 17 00:00:00 2001
 From: James Cowgill <jcowgill@debian.org>
 Date: Sun, 11 Aug 2019 16:50:56 +0100
-Subject: [PATCH 02/17] avcodec/arm/sbcenc: avoid callee preserved vfp
+Subject: [PATCH 02/21] avcodec/arm/sbcenc: avoid callee preserved vfp
  registers
 
 When compiling FFmpeg with GCC-9, some very random segfaults were

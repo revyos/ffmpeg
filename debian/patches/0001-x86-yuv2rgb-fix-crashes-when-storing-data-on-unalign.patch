@@ -1,7 +1,7 @@
 From f4f0b38cfdf7c9029f1b244fbf578b38eeb5e5a1 Mon Sep 17 00:00:00 2001
 From: James Almer <jamrial@gmail.com>
 Date: Tue, 12 Jan 2021 19:17:37 +0100
-Subject: [PATCH 01/17] x86/yuv2rgb: fix crashes when storing data on unaligned
+Subject: [PATCH 01/21] x86/yuv2rgb: fix crashes when storing data on unaligned
  buffers
 
 Regression since fc6a5883d6af8cae0e96af84dda0ad74b360a084

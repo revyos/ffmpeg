@@ -1,7 +1,7 @@
-From b34626ae98d5a81a9d42021b550683c42ec044f6 Mon Sep 17 00:00:00 2001
+From 8d0b251c7086452a3b480a3173cfca0c63666305 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E6=81=92=E7=95=85?= <dongkaiyuan.dky@alibaba-inc.com>
 Date: Mon, 18 Sep 2023 17:15:55 +0000
-Subject: [PATCH 14/17] OMX CODECS Performance Enhanced
+Subject: [PATCH 14/21] OMX CODECS Performance Enhanced
 
 ---
  libavcodec/omx.c            | 114 +++++-------
@@ -11,7 +11,7 @@ Subject: [PATCH 14/17] OMX CODECS Performance Enhanced
  4 files changed, 364 insertions(+), 466 deletions(-)
 
 diff --git a/libavcodec/omx.c b/libavcodec/omx.c
-index f07da13b67..ce88de2950 100644
+index f07da13b67..4c1c838b14 100644
 --- a/libavcodec/omx.c
 +++ b/libavcodec/omx.c
 @@ -32,6 +32,8 @@
@@ -27,7 +27,7 @@ index f07da13b67..ce88de2950 100644
  #include "h264.h"
  #include "internal.h"
  
-+#include <omxil/OMX_CsiExt.h>
++#include <OMX_CsiExt.h>
  #include "vsi_vendor_ext.h"
  static int omx_load_count = 0;
  
@@ -280,7 +280,7 @@ index f07da13b67..ce88de2950 100644
      { "bitrate",  "Set the encoding bitrate", OFFSET(bitrate), AV_OPT_TYPE_INT,   { .i64 = 10000000 }, 0, OMX_VIDEO_AVCLevelMax, VE, "bitrate" },
      { "QpI",  "Set the encoding Qp for I frames", OFFSET(QpI), AV_OPT_TYPE_INT,   { .i64 = 27 }, 0, 51, VE, "QpI" },
 diff --git a/libavcodec/omxdecoder.c b/libavcodec/omxdecoder.c
-index dfb6a91df2..74eaed7fc0 100755
+index dfb6a91df2..3243ab13db 100755
 --- a/libavcodec/omxdecoder.c
 +++ b/libavcodec/omxdecoder.c
 @@ -34,6 +34,8 @@
@@ -296,7 +296,7 @@ index dfb6a91df2..74eaed7fc0 100755
  #include "h264.h"
  #include "libswscale/swscale.h"
  
-+#include <omxil/OMX_CsiExt.h>
++#include <OMX_CsiExt.h>
  #include "vsi_vendor_ext.h"
  static int omx_load_count = 0;
  #define kNumPictureBuffers 2
@@ -987,7 +987,7 @@ index dfb6a91df2..74eaed7fc0 100755
  };
  
 diff --git a/libavcodec/omxjpegdecoder.c b/libavcodec/omxjpegdecoder.c
-index 37bbef8138..400d24d7dd 100755
+index 37bbef8138..d3d341d208 100755
 --- a/libavcodec/omxjpegdecoder.c
 +++ b/libavcodec/omxjpegdecoder.c
 @@ -35,6 +35,8 @@
@@ -1003,7 +1003,7 @@ index 37bbef8138..400d24d7dd 100755
  #include "hevc_parse.h"
  #include "hwconfig.h"
  #include "internal.h"
-+#include <omxil/OMX_CsiExt.h>
++#include <OMX_CsiExt.h>
  static int omx_load_count = 0;
  #define DEBUG_NO_OMX
  
@@ -1466,7 +1466,7 @@ index 37bbef8138..400d24d7dd 100755
 +    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_SKIP_FRAME_FILL_PARAM,
  };
 diff --git a/libavcodec/omxjpegencoder.c b/libavcodec/omxjpegencoder.c
-index 43eba623ec..ed063b96e6 100644
+index 43eba623ec..1464c0d613 100644
 --- a/libavcodec/omxjpegencoder.c
 +++ b/libavcodec/omxjpegencoder.c
 @@ -1,23 +1,22 @@
@@ -1516,7 +1516,7 @@ index 43eba623ec..ed063b96e6 100644
  #include "h264.h"
  #include "internal.h"
  
-+#include <omxil/OMX_CsiExt.h>
++#include <OMX_CsiExt.h>
  #include "vsi_vendor_ext.h"
  static int omx_load_count = 0;
  #define TIMEOUT_MS 1000

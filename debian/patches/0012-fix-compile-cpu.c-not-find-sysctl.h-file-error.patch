@@ -1,7 +1,7 @@
 From f7d2fc5de6af74ef48836270f4385185cb81a595 Mon Sep 17 00:00:00 2001
 From: Han Gao <gaohan@iscas.ac.cn>
 Date: Thu, 12 Oct 2023 04:05:24 +0800
-Subject: [PATCH 12/17] fix: compile-cpu.c-not-find-sysctl.h-file-error
+Subject: [PATCH 12/21] fix: compile-cpu.c-not-find-sysctl.h-file-error
 
 Signed-off-by: Han Gao <gaohan@iscas.ac.cn>
 ---

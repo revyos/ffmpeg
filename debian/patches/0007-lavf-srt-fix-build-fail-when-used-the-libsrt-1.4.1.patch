@@ -1,7 +1,7 @@
 From 3246a0e51f6c336d1a4d3154bfd89932f0b879b5 Mon Sep 17 00:00:00 2001
 From: Jun Zhao <barryjzhao@tencent.com>
 Date: Sun, 12 Jul 2020 13:48:48 +0800
-Subject: [PATCH 07/17] lavf/srt: fix build fail when used the libsrt 1.4.1
+Subject: [PATCH 07/21] lavf/srt: fix build fail when used the libsrt 1.4.1
 
 libsrt changed the:
 SRTO_SMOOTHER   -> SRTO_CONGESTION

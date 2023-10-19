@@ -1,7 +1,7 @@
 From 6d5e9d5e32a9e859c7862c9ec00856fa3b199b1d Mon Sep 17 00:00:00 2001
 From: Marton Balint <cus@passwd.hu>
 Date: Fri, 9 Oct 2020 21:37:07 +0200
-Subject: [PATCH 08/17] avformat/libsrt: fix cleanups on failed libsrt_open()
+Subject: [PATCH 08/21] avformat/libsrt: fix cleanups on failed libsrt_open()
  and libsrt_setup()
 
 - Call srt_epoll_release() to avoid fd leak on libsrt_setup() error.

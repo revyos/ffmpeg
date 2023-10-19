@@ -1,13 +1,13 @@
-From ec567e7732d1e86d0673ff3cf9ae929781634466 Mon Sep 17 00:00:00 2001
+From 63ef4028e6c2e25a7949aaa0d035a6e1a61dfdec Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E6=81=92=E7=95=85?= <dongkaiyuan.dky@alibaba-inc.com>
 Date: Mon, 18 Sep 2023 16:53:11 +0000
-Subject: [PATCH 13/17] Add OMX CODECS
+Subject: [PATCH 13/21] Add OMX CODECS
 
 ---
  configure                         |    6 +
  fftools/Makefile                  |    2 +
  libavcodec/Makefile               |    6 +
- libavcodec/allcodecs.c            |   11 +-
+ libavcodec/allcodecs.c            |   10 +-
  libavcodec/omx.c                  |  667 ++++++++--
  libavcodec/omxdecoder.c           | 1923 +++++++++++++++++++++++++++++
  libavcodec/omxjpegdecoder.c       | 1099 +++++++++++++++++
@@ -19,7 +19,7 @@ Subject: [PATCH 13/17] Add OMX CODECS
  tests/api/Makefile                |    9 +-
  tests/api/api-dec-test.c          |  169 +++
  tests/api/compile-api-dec-test.sh |    4 +
- 15 files changed, 5924 insertions(+), 82 deletions(-)
+ 15 files changed, 5924 insertions(+), 81 deletions(-)
  create mode 100755 libavcodec/omxdecoder.c
  create mode 100755 libavcodec/omxjpegdecoder.c
  create mode 100644 libavcodec/omxjpegencoder.c
@@ -81,7 +81,7 @@ index 5a6ea59715..458001c7d9 100644
  OBJS-$(CONFIG_H264_QSV_ENCODER)        += qsvenc_h264.o
  OBJS-$(CONFIG_H264_RKMPP_DECODER)      += rkmppdec.o
 diff --git a/libavcodec/allcodecs.c b/libavcodec/allcodecs.c
-index 80f128cade..a3d7d7a5cb 100644
+index 80f128cade..64e1800c27 100644
 --- a/libavcodec/allcodecs.c
 +++ b/libavcodec/allcodecs.c
 @@ -29,6 +29,14 @@
@@ -99,15 +99,7 @@ index 80f128cade..a3d7d7a5cb 100644
  extern AVCodec ff_a64multi_encoder;
  extern AVCodec ff_a64multi5_encoder;
  extern AVCodec ff_aasc_decoder;
-@@ -166,7 +174,6 @@ extern AVCodec ff_indeo4_decoder;
- extern AVCodec ff_indeo5_decoder;
- extern AVCodec ff_interplay_video_decoder;
- extern AVCodec ff_jpeg2000_encoder;
--extern AVCodec ff_jpeg2000_decoder;
- extern AVCodec ff_jpegls_encoder;
- extern AVCodec ff_jpegls_decoder;
- extern AVCodec ff_jv_decoder;
-@@ -765,7 +772,6 @@ extern AVCodec ff_h264_amf_encoder;
+@@ -765,7 +773,6 @@ extern AVCodec ff_h264_amf_encoder;
  extern AVCodec ff_h264_cuvid_decoder;
  extern AVCodec ff_h264_mf_encoder;
  extern AVCodec ff_h264_nvenc_encoder;
@@ -115,7 +107,7 @@ index 80f128cade..a3d7d7a5cb 100644
  extern AVCodec ff_h264_qsv_encoder;
  extern AVCodec ff_h264_v4l2m2m_encoder;
  extern AVCodec ff_h264_vaapi_encoder;
-@@ -795,7 +801,6 @@ extern AVCodec ff_mpeg2_qsv_encoder;
+@@ -795,7 +802,6 @@ extern AVCodec ff_mpeg2_qsv_encoder;
  extern AVCodec ff_mpeg2_vaapi_encoder;
  extern AVCodec ff_mpeg4_cuvid_decoder;
  extern AVCodec ff_mpeg4_mediacodec_decoder;

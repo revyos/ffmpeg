@@ -1,14 +1,14 @@
-From 9c734f941ebcc7fbc00db92e471da33df6fd84d4 Mon Sep 17 00:00:00 2001
+From 5a5c74e54571cacb1662776aa4433afa3d8d513a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E6=81=92=E7=95=85?= <dongkaiyuan.dky@alibaba-inc.com>
 Date: Wed, 27 Sep 2023 21:34:17 +0000
-Subject: [PATCH 17/17] Improve the OMX encoders for lower CPU usage
+Subject: [PATCH 17/21] Improve the OMX encoders for lower CPU usage
 
 ---
  libavcodec/omx.c | 8 ++++++++
  1 file changed, 8 insertions(+)
 
 diff --git a/libavcodec/omx.c b/libavcodec/omx.c
-index e2a7210abe..bdf0a41e9d 100644
+index 1b3c02badf..29a5f086f0 100644
 --- a/libavcodec/omx.c
 +++ b/libavcodec/omx.c
 @@ -1177,6 +1177,7 @@ static int omx_encode_frame(AVCodecContext *avctx, AVPacket *pkt,

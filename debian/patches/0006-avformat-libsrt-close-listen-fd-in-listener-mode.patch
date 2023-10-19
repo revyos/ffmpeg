@@ -1,7 +1,7 @@
 From 45075c04483b307fed967bd41c49c2c356ee1403 Mon Sep 17 00:00:00 2001
 From: Nicolas Sugino <nsugino@3way.com.ar>
 Date: Thu, 13 Aug 2020 22:18:26 -0300
-Subject: [PATCH 06/17] avformat/libsrt: close listen fd in listener mode
+Subject: [PATCH 06/21] avformat/libsrt: close listen fd in listener mode
 
 In listener mode the first fd is not closed when libsrt_close() is called
 because it is overwritten by the new accept fd.  Added the listen_fd to the

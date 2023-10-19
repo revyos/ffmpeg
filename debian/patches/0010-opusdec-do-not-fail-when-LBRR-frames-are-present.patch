@@ -1,7 +1,7 @@
 From ce0767d18ff27665e5e22171f842ccbd53c6906e Mon Sep 17 00:00:00 2001
 From: Anton Khirnov <anton@khirnov.net>
 Date: Fri, 11 Sep 2020 19:32:43 +0200
-Subject: [PATCH 10/17] opusdec: do not fail when LBRR frames are present
+Subject: [PATCH 10/21] opusdec: do not fail when LBRR frames are present
 
 Decode and discard them.
 

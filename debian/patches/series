@@ -15,4 +15,7 @@
 0015-OMX-CODECS-Stability-Enhanced.patch
 0016-Fix-OMX-Decoders-For-Dynamic-Resolution-Videos.patch
 0017-Improve-the-OMX-encoders-for-lower-CPU-usage.patch
-
+0018-configure-extend-SDL-check-to-accept-all-2.x-version.patch
+0019-configure-add-initial-RISC-V-support.patch
+0020-avcodec-libdav1d-fix-compilation-after-recent-libdav.patch
+0021-fix-disable-omx-jpeg-decoder.patch

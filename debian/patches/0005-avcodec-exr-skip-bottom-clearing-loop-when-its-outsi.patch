@@ -1,7 +1,7 @@
 From 80c7e6585a3be77a26d94e6644db2f5b708cdb8f Mon Sep 17 00:00:00 2001
 From: Michael Niedermayer <michael@niedermayer.cc>
 Date: Tue, 12 Jan 2021 20:36:35 +0100
-Subject: [PATCH 05/17] avcodec/exr: skip bottom clearing loop when its outside
+Subject: [PATCH 05/21] avcodec/exr: skip bottom clearing loop when its outside
  the image
 
 Fixes: signed integer overflow: 1633771809 * 32960 cannot be represented in type 'int'

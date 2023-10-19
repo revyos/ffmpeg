@@ -1,7 +1,7 @@
 From 8a287c6f8369050de5f32d23ec2d504831a2efb2 Mon Sep 17 00:00:00 2001
 From: Han Gao <gaohan@iscas.ac.cn>
 Date: Thu, 12 Oct 2023 04:04:29 +0800
-Subject: [PATCH 11/17] fix: mips64_cpu_detection
+Subject: [PATCH 11/21] fix: mips64_cpu_detection
 
 Signed-off-by: Han Gao <gaohan@iscas.ac.cn>
 ---
