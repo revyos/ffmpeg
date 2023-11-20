@@ -33,6 +33,18 @@
 #include "codec.h"
 #include "codec_id.h"
 #include "codec_internal.h"
+#include "avcodec.h"
+#include "version.h"
+
+extern const FFCodec ff_vp9_omx_decoder;
+extern const FFCodec ff_hevc_omx_decoder;
+extern const FFCodec ff_hevc_omx_encoder;
+extern const FFCodec ff_h264_omx_decoder;
+extern const FFCodec ff_h264_omx_encoder;
+extern const FFCodec ff_jpeg_omx_encoder;
+extern const FFCodec ff_jpeg_omx_decoder;
+extern const FFCodec ff_mpeg4_omx_encoder;
+extern const FFCodec ff_mpeg4_omx_decoder;
 
 extern const FFCodec ff_a64multi_encoder;
 extern const FFCodec ff_a64multi5_encoder;
@@ -822,7 +834,6 @@ extern const FFCodec ff_h264_amf_encoder;
 extern const FFCodec ff_h264_cuvid_decoder;
 extern const FFCodec ff_h264_mf_encoder;
 extern const FFCodec ff_h264_nvenc_encoder;
-extern const FFCodec ff_h264_omx_encoder;
 extern const FFCodec ff_h264_qsv_encoder;
 extern const FFCodec ff_h264_v4l2m2m_encoder;
 extern const FFCodec ff_h264_vaapi_encoder;
@@ -848,7 +859,6 @@ extern const FFCodec ff_mpeg2_qsv_encoder;
 extern const FFCodec ff_mpeg2_vaapi_encoder;
 extern const FFCodec ff_mpeg4_cuvid_decoder;
 extern const FFCodec ff_mpeg4_mediacodec_decoder;
-extern const FFCodec ff_mpeg4_omx_encoder;
 extern const FFCodec ff_mpeg4_v4l2m2m_encoder;
 extern const FFCodec ff_prores_videotoolbox_encoder;
 extern const FFCodec ff_vc1_cuvid_decoder;
