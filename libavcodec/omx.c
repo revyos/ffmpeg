@@ -977,10 +977,7 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
     if (!s->in_buffer_headers || !s->free_in_buffers || !s->out_buffer_headers || !s->done_out_buffers)
         return AVERROR(ENOMEM);
     for (i = 0; i < s->num_in_buffers && err == OMX_ErrorNone; i++) {
-        if (s->input_zerocopy)
-            err = OMX_UseBuffer(s->handle, &s->in_buffer_headers[i], s->in_port, s, in_port_params.nBufferSize, NULL);
-        else
-            err = OMX_AllocateBuffer(s->handle, &s->in_buffer_headers[i],  s->in_port,  s, in_port_params.nBufferSize);
+        err = OMX_AllocateBuffer(s->handle, &s->in_buffer_headers[i],  s->in_port,  s, in_port_params.nBufferSize);
         if (err == OMX_ErrorNone)
             s->in_buffer_headers[i]->pAppPrivate = s->in_buffer_headers[i]->pOutputPortPrivate = NULL;
     }
