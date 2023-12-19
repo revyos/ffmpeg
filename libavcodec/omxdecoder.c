@@ -1734,14 +1734,18 @@ static int ff_omx_dec_flush(AVCodecContext *avctx, OMXCodecDecoderContext *s)
             av_log(avctx, AV_LOG_ERROR, "Unable to set IDLE state before flush data\n");
             return AVERROR_UNKNOWN;
         }
+        if (wait_for_state(s, OMX_StateIdle) < 0) {
+            av_log(avctx, AV_LOG_ERROR, "Didn't get OMX_StateIdle after flushing\n");
+            return AVERROR_UNKNOWN;
+        }
 
-        err = OMX_SendCommand(s->handle, OMX_CommandFlush, s->in_port, NULL);
-        if (err != OMX_ErrorNone)
-            return -1;
+        // err = OMX_SendCommand(s->handle, OMX_CommandFlush, s->in_port, NULL);
+        // if (err != OMX_ErrorNone)
+        //     return -1;
 
-        err = OMX_SendCommand(s->handle, OMX_CommandFlush, s->out_port, NULL);
-        if (err != OMX_ErrorNone)
-            return -1;
+        // err = OMX_SendCommand(s->handle, OMX_CommandFlush, s->out_port, NULL);
+        // if (err != OMX_ErrorNone)
+        //     return -1;
 
         while (s->num_done_out_buffers > 0) {
             buffer = get_buffer(&s->output_mutex, &s->output_cond,
@@ -1758,10 +1762,7 @@ static int ff_omx_dec_flush(AVCodecContext *avctx, OMXCodecDecoderContext *s)
                 return AVERROR_UNKNOWN;
             }
         }
-        if (wait_for_state(s, OMX_StateIdle) < 0) {
-            av_log(avctx, AV_LOG_ERROR, "Didn't get OMX_StateIdle after flushing\n");
-            return AVERROR_UNKNOWN;
-        }
+
         err = OMX_SendCommand(s->handle, OMX_CommandStateSet, OMX_StateExecuting, NULL);
         CHECK(err);
         if (wait_for_state(s, OMX_StateExecuting) < 0) {
