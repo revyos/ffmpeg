@@ -1124,7 +1124,7 @@ static int omx_try_fillbuffer(OMXCodecDecoderContext *s, OMX_BUFFERHEADERTYPE *b
 {
     OMX_ERRORTYPE err;
     pthread_mutex_lock(&s->free_mutex);
-    if (buffer->pAppPrivate) {
+    if (buffer->pAppPrivate && s->handle) {
         err = OMX_FillThisBuffer(s->handle, buffer);
         if (err != OMX_ErrorNone) {
             append_buffer(&s->output_mutex, &s->output_cond, &s->num_done_out_buffers, s->done_out_buffers, buffer);
