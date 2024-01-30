@@ -380,6 +380,7 @@ OBJS-$(CONFIG_H263_ENCODER)            += mpeg4video.o  \
                                           h263.o ituh263enc.o h263data.o
 OBJS-$(CONFIG_H263_V4L2M2M_DECODER)    += v4l2_m2m_dec.o
 OBJS-$(CONFIG_H263_V4L2M2M_ENCODER)    += v4l2_m2m_enc.o
+OBJS-$(CONFIG_H263_OMX_DECODER)        += omxdecoder.o
 OBJS-$(CONFIG_H264_DECODER)            += h264dec.o h264_cabac.o h264_cavlc.o \
                                           h264_direct.o h264_loopfilter.o  \
                                           h264_mb.o h264_picture.o \

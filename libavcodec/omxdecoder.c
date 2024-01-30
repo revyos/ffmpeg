@@ -1263,11 +1263,14 @@ static int check_buffer_outsize(OMXCodecDecoderContext *s)
     CHECK(err);
     if (avctx->width != out_port_params.format.video.nFrameWidth ||
         avctx->height != out_port_params.format.video.nFrameHeight) {
+        // fix the green screen issue with h263.3gp
+        if  (avctx->width && avctx->height) {
+            s->resolution_changed = 1;
+        }
         avctx->width = out_port_params.format.video.nFrameWidth;
         avctx->height = out_port_params.format.video.nFrameHeight;
         avctx->coded_width = out_port_params.format.video.nFrameWidth;
         avctx->coded_height = out_port_params.format.video.nFrameHeight;
-        s->resolution_changed = 1;
         for (int i = 0; i < s->num_out_buffers; i++) {
             OMX_BUFFERHEADERTYPE *buffer = s->out_buffer_headers[i];
             err = omx_try_fillbuffer(s, buffer);
@@ -1447,13 +1450,16 @@ static av_cold int omx_component_init_decoder(AVCodecContext *avctx, const char 
     err = OMX_SetParameter(s->handle, OMX_IndexParamPortDefinition, &in_port_params);
     CHECK(err);
 
+    // h263.3gp width height is 0 when playing with mpv
+    if (avctx->width && avctx->height) {
+        out_port_params.nBufferSize = (OMX_U32) avctx->width * (OMX_U32) avctx->height * 3;
+    }
     out_port_params.format.video.nFrameWidth   = avctx->width;
     out_port_params.format.video.nFrameHeight  = avctx->height;
     out_port_params.format.video.nStride      = (OMX_U32) avctx->width;
     out_port_params.format.video.nSliceHeight = (OMX_U32) avctx->height;
     out_port_params.nBufferCountActual   = kNumPictureBuffers;
     out_port_params.nBufferCountMin      = kNumPictureBuffers;
-    out_port_params.nBufferSize = (OMX_U32) avctx->width * (OMX_U32) avctx->height * 3;
     err = OMX_SetParameter(s->handle, OMX_IndexParamPortDefinition, &out_port_params);
     CHECK(err);
 
@@ -1506,6 +1512,9 @@ static av_cold int omx_component_init_decoder(AVCodecContext *avctx, const char 
         break;
     case AV_CODEC_ID_VP9:
         formatIn.eCompressionFormat = OMX_CSI_VIDEO_CodingVP9;
+        break;
+    case AV_CODEC_ID_H263:
+        formatIn.eCompressionFormat = OMX_VIDEO_CodingH263;
         break;
     default:
         formatIn.eCompressionFormat = OMX_VIDEO_CodingAutoDetect;
@@ -2107,6 +2116,7 @@ DECLARE_OMX_VDEC(h264, "H.264", AV_CODEC_ID_H264, "h264_mp4toannexb")
 DECLARE_OMX_VDEC(hevc, "H.265", AV_CODEC_ID_HEVC, "hevc_mp4toannexb")
 DECLARE_OMX_VDEC(mpeg4, "MPEG-4 part 2", AV_CODEC_ID_MPEG4, NULL)
 DECLARE_OMX_VDEC(vp9, "VP9", AV_CODEC_ID_VP9, NULL)
+DECLARE_OMX_VDEC(h263, "H263", AV_CODEC_ID_H263, NULL)
 
 #ifdef MPEG4_OMX
 DECLARE_OMX_VDEC(mpeg4, "MPEG4", AV_CODEC_ID_MPEG4, NULL)
