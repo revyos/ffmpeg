@@ -149,7 +149,7 @@ static int drm_map_frame(AVHWFramesContext *hwfc,
 
     av_assert0(desc->nb_objects <= AV_DRM_MAX_PLANES);
     for (i = 0; i < desc->nb_objects; i++) {
-        addr = mmap(NULL, desc->objects[i].size, mmap_prot, MAP_SHARED,
+        addr = mmap(NULL, src->height * src->width * 3 / 2, mmap_prot, MAP_SHARED,
                     desc->objects[i].fd, 0);
         if (addr == MAP_FAILED) {
             err = AVERROR(errno);
