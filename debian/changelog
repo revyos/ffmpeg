@@ -1,3 +1,9 @@
+ffmpeg (7:5.1.4-0+deb12u1revyos1) unstable; urgency=medium
+
+  * Apply revyos patchset
+
+ -- Han Gao <gaohan@iscas.ac.cn>  Wed, 06 Mar 2024 00:07:51 +0800
+
 ffmpeg (7:5.1.4-0+deb12u1) bookworm-security; urgency=medium
 
   * New upstream version 5.1.4
