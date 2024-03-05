@@ -1,0 +1,26 @@
+From 8282ab0f2adda160b1403e34cc76cfb5217205f9 Mon Sep 17 00:00:00 2001
+From: Han Gao <gaohan@iscas.ac.cn>
+Date: Tue, 5 Mar 2024 23:51:28 +0800
+Subject: [PATCH 5/6] fix: disable omx jpeg decoder
+
+Signed-off-by: Han Gao <gaohan@iscas.ac.cn>
+---
+ libavcodec/allcodecs.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/libavcodec/allcodecs.c b/libavcodec/allcodecs.c
+index 5a7db7f4a2..09ab0377bb 100644
+--- a/libavcodec/allcodecs.c
++++ b/libavcodec/allcodecs.c
+@@ -41,8 +41,6 @@ extern const FFCodec ff_hevc_omx_decoder;
+ extern const FFCodec ff_hevc_omx_encoder;
+ extern const FFCodec ff_h264_omx_decoder;
+ extern const FFCodec ff_h264_omx_encoder;
+-extern const FFCodec ff_jpeg_omx_encoder;
+-extern const FFCodec ff_jpeg_omx_decoder;
+ extern const FFCodec ff_mpeg4_omx_encoder;
+ extern const FFCodec ff_mpeg4_omx_decoder;
+ 
+-- 
+2.39.2
+

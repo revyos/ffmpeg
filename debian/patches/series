@@ -1,0 +1,6 @@
+0001-Update-FFMPEG-5.1.3-and-Adapt-to-OMX.patch
+0002-Fixed-OMX_UseBuffer-api-unsupported-bug.patch
+0003-Increase-FPS-when-Encode-Low-Resolution-Video.patch
+0004-fix-flush-time-sequence-disordered.patch
+0005-fix-disable-omx-jpeg-decoder.patch
+0006-fix-use-OMX_CsiExt.h-instead-of-omxil-OMX_CsiExt.h.patch

@@ -1,0 +1,68 @@
+From 6a5cb89c16d064529f5b2637378aeb80a8fe7ddb Mon Sep 17 00:00:00 2001
+From: Han Gao <gaohan@iscas.ac.cn>
+Date: Wed, 6 Mar 2024 00:28:36 +0800
+Subject: [PATCH 6/6] fix: use OMX_CsiExt.h instead of omxil/OMX_CsiExt.h
+
+Signed-off-by: Han Gao <gaohan@iscas.ac.cn>
+---
+ libavcodec/omx.c            | 2 +-
+ libavcodec/omxdecoder.c     | 2 +-
+ libavcodec/omxjpegdecoder.c | 2 +-
+ libavcodec/omxjpegencoder.c | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/libavcodec/omx.c b/libavcodec/omx.c
+index 672ff8255d..bb8a8134f9 100644
+--- a/libavcodec/omx.c
++++ b/libavcodec/omx.c
+@@ -48,7 +48,7 @@
+ #include "pthread_internal.h"
+ #include "encode.h"
+ 
+-#include <omxil/OMX_CsiExt.h>
++#include <OMX_CsiExt.h>
+ int omx_load_count = 0;
+ 
+ #ifdef OMX_SKIP64BIT
+diff --git a/libavcodec/omxdecoder.c b/libavcodec/omxdecoder.c
+index 7f1ea3d276..841b7c197b 100644
+--- a/libavcodec/omxdecoder.c
++++ b/libavcodec/omxdecoder.c
+@@ -70,7 +70,7 @@
+ 
+ #define CSI_OMX_SUPPORT
+ #ifdef CSI_OMX_SUPPORT
+-#include <omxil/OMX_CsiExt.h>
++#include <OMX_CsiExt.h>
+ #endif
+ 
+ // #include "vsi_vendor_ext.h"
+diff --git a/libavcodec/omxjpegdecoder.c b/libavcodec/omxjpegdecoder.c
+index b07ca19854..48b2a4bf2f 100644
+--- a/libavcodec/omxjpegdecoder.c
++++ b/libavcodec/omxjpegdecoder.c
+@@ -66,7 +66,7 @@
+ #include "hwconfig.h"
+ #include "internal.h"
+ #include "codec_internal.h"
+-#include <omxil/OMX_CsiExt.h>
++#include <OMX_CsiExt.h>
+ extern int omx_load_count;
+ #define DEBUG_NO_OMX
+ 
+diff --git a/libavcodec/omxjpegencoder.c b/libavcodec/omxjpegencoder.c
+index b6c17bb8c7..2bc6d10468 100644
+--- a/libavcodec/omxjpegencoder.c
++++ b/libavcodec/omxjpegencoder.c
+@@ -45,7 +45,7 @@
+ #include "codec_internal.h"
+ #include "encode.h"
+ 
+-#include <omxil/OMX_CsiExt.h>
++#include <OMX_CsiExt.h>
+ // #include "vsi_vendor_ext.h"
+ extern int omx_load_count;
+ #define TIMEOUT_MS 1000
+-- 
+2.39.2
+
