@@ -45,7 +45,7 @@
 #include "codec_internal.h"
 #include "encode.h"
 
-#include <omxil/OMX_CsiExt.h>
+#include <OMX_CsiExt.h>
 // #include "vsi_vendor_ext.h"
 extern int omx_load_count;
 #define TIMEOUT_MS 1000

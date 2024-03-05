@@ -48,7 +48,7 @@
 #include "pthread_internal.h"
 #include "encode.h"
 
-#include <omxil/OMX_CsiExt.h>
+#include <OMX_CsiExt.h>
 int omx_load_count = 0;
 
 #ifdef OMX_SKIP64BIT

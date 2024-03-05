@@ -70,7 +70,7 @@
 
 #define CSI_OMX_SUPPORT
 #ifdef CSI_OMX_SUPPORT
-#include <omxil/OMX_CsiExt.h>
+#include <OMX_CsiExt.h>
 #endif
 
 // #include "vsi_vendor_ext.h"

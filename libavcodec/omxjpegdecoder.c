@@ -66,7 +66,7 @@
 #include "hwconfig.h"
 #include "internal.h"
 #include "codec_internal.h"
-#include <omxil/OMX_CsiExt.h>
+#include <OMX_CsiExt.h>
 extern int omx_load_count;
 #define DEBUG_NO_OMX
 
