@@ -1711,6 +1711,15 @@ static av_cold int omx_decode_init(AVCodecContext *avctx)
     int ret = AVERROR_DECODER_NOT_FOUND;
     const char *role;
     av_log(avctx, AV_LOG_INFO, "omx_decode_init enter\n");
+
+    if (avctx->codec->id == AV_CODEC_ID_MPEG4 || avctx->codec->id == AV_CODEC_ID_H263) {
+        if (avctx->width > 1920 || avctx->height > 1088) {
+            av_log(avctx, AV_LOG_FATAL, "%s: Unsupported resolution (%lux%lu), max 1920x1088\n",
+                avcodec_get_name(avctx->codec->id), avctx->width, avctx->height);
+            return AVERROR_DECODER_NOT_FOUND;
+        }
+    }
+
     /* cleanup relies on the mutexes/conditions being initialized first. */
     s->omx_context = omx_init(avctx, s->libname, s->libprefix);
     if (!s->omx_context)
