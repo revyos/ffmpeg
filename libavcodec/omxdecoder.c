@@ -1427,6 +1427,8 @@ static av_cold int omx_component_init_decoder(AVCodecContext *avctx, const char 
     if (s->output_height)
         avctx->height = s->output_height;
 
+    if (avctx->width & 1)
+        avctx->width++;
 
 
     INIT_STRUCT(in_port_params);
