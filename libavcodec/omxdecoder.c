@@ -1517,6 +1517,9 @@ static av_cold int omx_component_init_decoder(AVCodecContext *avctx, const char 
     case AV_CODEC_ID_H263:
         formatIn.eCompressionFormat = OMX_VIDEO_CodingH263;
         break;
+    case AV_CODEC_ID_VC1:
+        formatIn.eCompressionFormat = OMX_VIDEO_CodingWMV;
+        break;
     default:
         formatIn.eCompressionFormat = OMX_VIDEO_CodingAutoDetect;
         break;
@@ -1766,6 +1769,7 @@ static av_cold int omx_decode_init(AVCodecContext *avctx)
     case AV_CODEC_ID_WMV1:
     case AV_CODEC_ID_WMV2:
     case AV_CODEC_ID_WMV3:
+    case AV_CODEC_ID_VC1:
         role = "video_decoder.wmv";
         break;
     case AV_CODEC_ID_VP6:
@@ -1885,7 +1889,11 @@ static int ff_omx_dec_flush(AVCodecContext *avctx, OMXCodecDecoderContext *s)
     s->draining = 0;
     if (!s->flushing) {
         s->flushing = 1;
-        s->pkt_sent_num = 0;
+        if (avctx->codec->id == AV_CODEC_ID_VC1) {
+            s->pkt_sent_num = -20;
+        } else {
+            s->pkt_sent_num = 0;
+        }
         av_log(avctx, AV_LOG_INFO, "ff_omx_dec_flush\n");
         if (OMX_ErrorNone != OMX_SendCommand(s->handle, OMX_CommandStateSet, OMX_StateIdle, NULL)) {
             av_log(avctx, AV_LOG_ERROR, "Unable to set IDLE state before flush data\n");
@@ -1992,7 +2000,7 @@ static int omx_receive_frame(AVCodecContext *avctx, AVFrame *frame)
 
             } else if (ret < 0) {
                 return ret;
-            } else {
+            } else if (s->buffered_pkt.size > 0) {
                 //success
                 s->pkt_full = 1;
             }
@@ -2008,6 +2016,7 @@ static void omx_decode_flush(AVCodecContext *avctx)
     if (s->buffered_pkt.size > 0) {
         av_packet_unref(&s->buffered_pkt);
         s->buffered_pkt.size = 0;
+        s->pkt_full = 0;
     }
     ff_omx_dec_flush(avctx, s);
 }
@@ -2138,3 +2147,4 @@ DECLARE_OMX_VDEC(hevc, "H.265", AV_CODEC_ID_HEVC, "hevc_mp4toannexb")
 DECLARE_OMX_VDEC(mpeg4, "MPEG-4 part 2", AV_CODEC_ID_MPEG4, NULL)
 DECLARE_OMX_VDEC(vp9, "VP9", AV_CODEC_ID_VP9, NULL)
 DECLARE_OMX_VDEC(h263, "H263", AV_CODEC_ID_H263, NULL)
+DECLARE_OMX_VDEC(vc1, "VC1", AV_CODEC_ID_VC1, NULL)
