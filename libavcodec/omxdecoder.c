@@ -97,6 +97,9 @@ typedef enum __DecoderStatus {
     ILLEGAL_STATE
 } DecoderStatus;
 
+typedef enum OMX_VIDEO_CODINGEXTTYPE {
+    OMX_VIDEO_CodingVP8 = OMX_VIDEO_CodingKhronosExtensions + 1
+} OMX_VIDEO_CODINGEXTTYPE;
 
 #define to_omx_ticks(x) (x)
 #define from_omx_ticks(x) (x)
@@ -1517,6 +1520,9 @@ static av_cold int omx_component_init_decoder(AVCodecContext *avctx, const char 
     case AV_CODEC_ID_H263:
         formatIn.eCompressionFormat = OMX_VIDEO_CodingH263;
         break;
+    case AV_CODEC_ID_VP8:
+        formatIn.eCompressionFormat = OMX_VIDEO_CodingVP8;
+        break;
     case AV_CODEC_ID_VC1:
         formatIn.eCompressionFormat = OMX_VIDEO_CodingWMV;
         break;
@@ -2148,3 +2154,4 @@ DECLARE_OMX_VDEC(mpeg4, "MPEG-4 part 2", AV_CODEC_ID_MPEG4, NULL)
 DECLARE_OMX_VDEC(vp9, "VP9", AV_CODEC_ID_VP9, NULL)
 DECLARE_OMX_VDEC(h263, "H263", AV_CODEC_ID_H263, NULL)
 DECLARE_OMX_VDEC(vc1, "VC1", AV_CODEC_ID_VC1, NULL)
+DECLARE_OMX_VDEC(vp8, "VP8", AV_CODEC_ID_VP8, NULL)
