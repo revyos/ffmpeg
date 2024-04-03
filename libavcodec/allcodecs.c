@@ -47,6 +47,7 @@ extern const FFCodec ff_mpeg4_omx_encoder;
 extern const FFCodec ff_mpeg4_omx_decoder;
 extern const FFCodec ff_h263_omx_decoder;
 extern const FFCodec ff_vc1_omx_decoder;
+extern const FFCodec ff_vp8_omx_decoder;
 
 extern const FFCodec ff_a64multi_encoder;
 extern const FFCodec ff_a64multi5_encoder;
