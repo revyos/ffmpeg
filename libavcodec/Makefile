@@ -455,6 +455,7 @@ OBJS-$(CONFIG_JPEGLS_DECODER)          += jpeglsdec.o jpegls.o
 OBJS-$(CONFIG_JPEGLS_ENCODER)          += jpeglsenc.o jpegls.o
 OBJS-$(CONFIG_JPEG_OMX_DECODER)        += omxjpegdecoder.o
 OBJS-$(CONFIG_JPEG_OMX_ENCODER)        += omxjpegencoder.o
+OBJS-$(CONFIG_MJPEG_OMX_DECODER)        += omxdecoder.o
 OBJS-$(CONFIG_JV_DECODER)              += jvdec.o
 OBJS-$(CONFIG_KGV1_DECODER)            += kgv1dec.o
 OBJS-$(CONFIG_KMVC_DECODER)            += kmvc.o
