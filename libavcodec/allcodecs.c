@@ -43,6 +43,7 @@ extern const FFCodec ff_h264_omx_decoder;
 extern const FFCodec ff_h264_omx_encoder;
 extern const FFCodec ff_jpeg_omx_encoder;
 extern const FFCodec ff_jpeg_omx_decoder;
+extern const FFCodec ff_mjpeg_omx_decoder;
 extern const FFCodec ff_mpeg4_omx_encoder;
 extern const FFCodec ff_mpeg4_omx_decoder;
 extern const FFCodec ff_h263_omx_decoder;

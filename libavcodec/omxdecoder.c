@@ -1526,6 +1526,9 @@ static av_cold int omx_component_init_decoder(AVCodecContext *avctx, const char 
     case AV_CODEC_ID_VC1:
         formatIn.eCompressionFormat = OMX_VIDEO_CodingWMV;
         break;
+    case AV_CODEC_ID_MJPEG:
+        formatIn.eCompressionFormat = OMX_VIDEO_CodingMJPEG;
+        break;
     default:
         formatIn.eCompressionFormat = OMX_VIDEO_CodingAutoDetect;
         break;
@@ -1786,6 +1789,9 @@ static av_cold int omx_decode_init(AVCodecContext *avctx)
         break;
     case AV_CODEC_ID_VP9:
         role = "video_decoder.vp9";
+        break;
+    case AV_CODEC_ID_MJPEG:
+        role = "video_decoder.jpeg";
         break;
     default:
         return AVERROR(ENOSYS);
@@ -2155,3 +2161,4 @@ DECLARE_OMX_VDEC(vp9, "VP9", AV_CODEC_ID_VP9, NULL)
 DECLARE_OMX_VDEC(h263, "H263", AV_CODEC_ID_H263, NULL)
 DECLARE_OMX_VDEC(vc1, "VC1", AV_CODEC_ID_VC1, NULL)
 DECLARE_OMX_VDEC(vp8, "VP8", AV_CODEC_ID_VP8, NULL)
+DECLARE_OMX_VDEC(mjpeg, "MJPEG", AV_CODEC_ID_MJPEG, NULL)
