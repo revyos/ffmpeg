@@ -1,0 +1,25 @@
+From 7e75932d6609b60a3641554d9dd1544263087d3f Mon Sep 17 00:00:00 2001
+From: "yangtianyu.lu" <luyangtianyu.lyty@alibaba-inc.com>
+Date: Fri, 12 Jan 2024 02:37:56 +0000
+Subject: [PATCH 05/17] avoid releasing empty resource
+
+---
+ libavcodec/omxdecoder.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libavcodec/omxdecoder.c b/libavcodec/omxdecoder.c
+index 7f1ea3d276..cb583ef86c 100644
+--- a/libavcodec/omxdecoder.c
++++ b/libavcodec/omxdecoder.c
+@@ -1124,7 +1124,7 @@ static int omx_try_fillbuffer(OMXCodecDecoderContext *s, OMX_BUFFERHEADERTYPE *b
+ {
+     OMX_ERRORTYPE err;
+     pthread_mutex_lock(&s->free_mutex);
+-    if (buffer->pAppPrivate) {
++    if (buffer->pAppPrivate && s->handle) {
+         err = OMX_FillThisBuffer(s->handle, buffer);
+         if (err != OMX_ErrorNone) {
+             append_buffer(&s->output_mutex, &s->output_cond, &s->num_done_out_buffers, s->done_out_buffers, buffer);
+-- 
+2.40.1
+

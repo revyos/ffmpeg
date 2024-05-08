@@ -1,7 +1,7 @@
-From 9ceaf6c5c3c35f9b65b9c69f98a6f90b32dc8ae0 Mon Sep 17 00:00:00 2001
+From f26a27b3bc5e9d82f544af8b996d15ba9ff7f528 Mon Sep 17 00:00:00 2001
 From: "yangtianyu.lu" <luyangtianyu.lyty@alibaba-inc.com>
 Date: Thu, 14 Dec 2023 11:41:18 +0000
-Subject: [PATCH 3/6] Increase FPS when Encode Low Resolution Video
+Subject: [PATCH 03/17] Increase FPS when Encode Low Resolution Video
 
 ---
  libavcodec/omx.c | 14 ++++----------
@@ -65,5 +65,5 @@ index bf90fa4ae2..672ff8255d 100644
                              &s->num_done_out_buffers, s->done_out_buffers,
                              !frame || had_partial);
 -- 
-2.39.2
+2.40.1
 

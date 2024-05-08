@@ -1,7 +1,7 @@
-From 65bbc6cc30149cf1a509bee366308e031e2f06ee Mon Sep 17 00:00:00 2001
+From c8a5cf29b9e218046c2004f43a68dff6332971fd Mon Sep 17 00:00:00 2001
 From: "yangtianyu.lu" <luyangtianyu.lyty@alibaba-inc.com>
 Date: Thu, 23 Nov 2023 04:06:31 +0000
-Subject: [PATCH 2/6] Fixed OMX_UseBuffer() api unsupported bug
+Subject: [PATCH 02/17] Fixed OMX_UseBuffer() api unsupported bug
 
 ---
  libavcodec/omx.c | 5 +----
@@ -24,5 +24,5 @@ index 9dafd18777..bf90fa4ae2 100644
              s->in_buffer_headers[i]->pAppPrivate = s->in_buffer_headers[i]->pOutputPortPrivate = NULL;
      }
 -- 
-2.39.2
+2.40.1
 

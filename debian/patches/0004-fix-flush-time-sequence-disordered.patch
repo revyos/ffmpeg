@@ -1,7 +1,7 @@
-From 945e7fd071d1eb8198b20a3aef97ff33f71a87c9 Mon Sep 17 00:00:00 2001
+From bfd6fba988fe78dc842c7c544f6c7e6c2efc219b Mon Sep 17 00:00:00 2001
 From: "yangtianyu.lu" <luyangtianyu.lyty@alibaba-inc.com>
 Date: Tue, 19 Dec 2023 11:59:26 +0000
-Subject: [PATCH 4/6] fix flush time sequence disordered
+Subject: [PATCH 04/17] fix flush time sequence disordered
 
 ---
  libavcodec/omxdecoder.c | 21 +++++++++++----------
@@ -49,5 +49,5 @@ index 60edda8a0f..7f1ea3d276 100644
          CHECK(err);
          if (wait_for_state(s, OMX_StateExecuting) < 0) {
 -- 
-2.39.2
+2.40.1
 
