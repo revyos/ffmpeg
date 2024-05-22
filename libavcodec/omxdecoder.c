@@ -2010,6 +2010,11 @@ static int ff_omx_dec_flush(AVCodecContext *avctx, OMXCodecDecoderContext *s)
     s->draining = 0;
     if (!s->flushing) {
         s->flushing = 1;
+        if (s->got_eos) {
+          s->eos_sent = 0;
+          s->got_eos = 0;
+          s->eos_reach = 0;
+        }
         if (avctx->codec->id == AV_CODEC_ID_VC1) {
             s->pkt_sent_num = -20;
         } else {
