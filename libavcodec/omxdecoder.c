@@ -875,7 +875,11 @@ static OMX_ERRORTYPE event_handler(OMX_HANDLETYPE component, OMX_PTR app_data, O
         }
         break;
     case OMX_EventPortSettingsChanged:
-        if ((int)data1 == OMX_DirOutput) { //out is OMX_DirOutput
+        if (data2 != 0) {
+            // do not handle event=OMX_EventPortSettingsChanged when nData2 != 0,
+            // Refer to dynamic vp9 resolution changing design document.
+            break;
+        } else if ((int)data1 == OMX_DirOutput) { //out is OMX_DirOutput
             OMX_PARAM_PORTDEFINITIONTYPE out_port_params;
             av_log(NULL, AV_LOG_INFO, "OMX outport settings changed: out_port: %d\n", s->out_port);
 
