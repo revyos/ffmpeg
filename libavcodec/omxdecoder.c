@@ -417,7 +417,7 @@ static uint8_t *find_save_vir_address(OMXCodecDecoderContext *s, OMX_BUFFERHEADE
     for (int i = 0; i < s->num_out_buffers * 2; i++) {
         if (s->buffer_table[i].buffer == NULL) {
             s->buffer_table[i].buffer = buffer;
-            s->buffer_table[i].vir_address = mmap(NULL, size, PROT_READ, MAP_PRIVATE, buffer->pBuffer, 0);
+            s->buffer_table[i].vir_address = mmap(NULL, size, PROT_READ, MAP_PRIVATE, (int)buffer->pBuffer, 0);
             return s->buffer_table[i].vir_address;
         }
     }
