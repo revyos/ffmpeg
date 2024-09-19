@@ -1,7 +1,7 @@
-From 4c537cd815c4d4b30ddaad73278ee65eb9e6e242 Mon Sep 17 00:00:00 2001
+From 67775e5b916c01c588355f787828603f4a8f7afb Mon Sep 17 00:00:00 2001
 From: huxin <wb-hx963136@alibaba-inc.com>
 Date: Tue, 30 Jan 2024 18:32:42 +0800
-Subject: [PATCH 07/17] Add h263 omx decoder
+Subject: [PATCH 07/27] Add h263 omx decoder
 
 ---
  configure               |  1 +

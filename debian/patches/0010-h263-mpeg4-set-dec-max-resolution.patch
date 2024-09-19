@@ -1,7 +1,7 @@
-From 0e5341cdafc032439a6e97e4ff0b5c440ee3b12d Mon Sep 17 00:00:00 2001
+From bc5d3f4c6b469416de308151d7169cd237758b6b Mon Sep 17 00:00:00 2001
 From: huxin <wb-hx963136@alibaba-inc.com>
 Date: Thu, 7 Mar 2024 16:21:12 +0800
-Subject: [PATCH 10/17] h263/mpeg4: set dec max resolution
+Subject: [PATCH 10/27] h263/mpeg4: set dec max resolution
 
 ---
  libavcodec/omxdecoder.c | 9 +++++++++

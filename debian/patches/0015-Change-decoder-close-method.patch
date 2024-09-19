@@ -1,7 +1,7 @@
-From 5f25ebb6fef55dfd432949c44f9f9d02fb6cc2f3 Mon Sep 17 00:00:00 2001
+From 808936a02aa41d10a10056c62cb2442ac4e652dc Mon Sep 17 00:00:00 2001
 From: huxin <wb-hx963136@alibaba-inc.com>
 Date: Sat, 13 Apr 2024 19:12:26 +0800
-Subject: [PATCH 15/17] Change decoder close method
+Subject: [PATCH 15/27] Change decoder close method
 
 ---
  libavcodec/omxdecoder.c | 263 +++++++++++++++++++++++++++-------------

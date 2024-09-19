@@ -1,0 +1,36 @@
+From a8898ad513b826165cdd290a9bbbe644a860db48 Mon Sep 17 00:00:00 2001
+From: Han Gao <gaohan@iscas.ac.cn>
+Date: Thu, 19 Sep 2024 21:40:41 +0800
+Subject: [PATCH 25/27] fix: add type-cast for buffer->pBuffer
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+src/libavcodec/omxdecoder.c:420:93: error: passing argument 5 of ‘mmap’ makes integer from pointer without a cast [-Wint-conversion]
+  420 |             s->buffer_table[i].vir_address = mmap(NULL, size, PROT_READ, MAP_PRIVATE, buffer->pBuffer, 0);
+      |                                                                                       ~~~~~~^~~~~~~~~
+      |                                                                                             |
+      |                                                                                             OMX_U8 * {aka unsigned char *}
+
+Signed-off-by: Han Gao <gaohan@iscas.ac.cn>
+Signed-off-by: Han Gao <rabenda.cn@gmail.com>
+---
+ libavcodec/omxdecoder.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libavcodec/omxdecoder.c b/libavcodec/omxdecoder.c
+index d5e525160c..e64d636419 100644
+--- a/libavcodec/omxdecoder.c
++++ b/libavcodec/omxdecoder.c
+@@ -417,7 +417,7 @@ static uint8_t *find_save_vir_address(OMXCodecDecoderContext *s, OMX_BUFFERHEADE
+     for (int i = 0; i < s->num_out_buffers * 2; i++) {
+         if (s->buffer_table[i].buffer == NULL) {
+             s->buffer_table[i].buffer = buffer;
+-            s->buffer_table[i].vir_address = mmap(NULL, size, PROT_READ, MAP_PRIVATE, buffer->pBuffer, 0);
++            s->buffer_table[i].vir_address = mmap(NULL, size, PROT_READ, MAP_PRIVATE, (int)buffer->pBuffer, 0);
+             return s->buffer_table[i].vir_address;
+         }
+     }
+-- 
+2.40.1
+

@@ -1,7 +1,7 @@
-From 4c7ec9cd3c3dc72284349a7d117b6d0a805cbd9f Mon Sep 17 00:00:00 2001
+From b8adbe52ae4dedcea04750c81b22312fc5a21aa0 Mon Sep 17 00:00:00 2001
 From: huxin <wb-hx963136@alibaba-inc.com>
 Date: Wed, 3 Apr 2024 16:21:25 +0800
-Subject: [PATCH 13/17] Add vp8 omx decoder
+Subject: [PATCH 13/27] Add vp8 omx decoder
 
 ---
  configure               | 1 +

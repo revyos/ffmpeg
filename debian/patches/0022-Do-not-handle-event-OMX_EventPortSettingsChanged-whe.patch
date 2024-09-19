@@ -1,0 +1,30 @@
+From 91e242f0bf36364024982db4e7f6bacc45601045 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E6=81=92=E7=95=85?= <dongkaiyuan.dky@alibaba-inc.com>
+Date: Tue, 6 Aug 2024 02:48:44 +0000
+Subject: [PATCH 22/27] Do not handle event=OMX_EventPortSettingsChanged when
+ nData2 != 0. Refer to dynamic vp9 resolution changing design document.
+
+---
+ libavcodec/omxdecoder.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/libavcodec/omxdecoder.c b/libavcodec/omxdecoder.c
+index 4ed511627e..d223812829 100644
+--- a/libavcodec/omxdecoder.c
++++ b/libavcodec/omxdecoder.c
+@@ -875,7 +875,11 @@ static OMX_ERRORTYPE event_handler(OMX_HANDLETYPE component, OMX_PTR app_data, O
+         }
+         break;
+     case OMX_EventPortSettingsChanged:
+-        if ((int)data1 == OMX_DirOutput) { //out is OMX_DirOutput
++        if (data2 != 0) {
++            // do not handle event=OMX_EventPortSettingsChanged when nData2 != 0,
++            // Refer to dynamic vp9 resolution changing design document.
++            break;
++        } else if ((int)data1 == OMX_DirOutput) { //out is OMX_DirOutput
+             OMX_PARAM_PORTDEFINITIONTYPE out_port_params;
+             av_log(NULL, AV_LOG_INFO, "OMX outport settings changed: out_port: %d\n", s->out_port);
+ 
+-- 
+2.40.1
+

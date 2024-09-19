@@ -1,7 +1,7 @@
-From 7e75932d6609b60a3641554d9dd1544263087d3f Mon Sep 17 00:00:00 2001
+From 83ca4c4af795351fe1427b8536b910f66c1ae7b3 Mon Sep 17 00:00:00 2001
 From: "yangtianyu.lu" <luyangtianyu.lyty@alibaba-inc.com>
 Date: Fri, 12 Jan 2024 02:37:56 +0000
-Subject: [PATCH 05/17] avoid releasing empty resource
+Subject: [PATCH 05/27] avoid releasing empty resource
 
 ---
  libavcodec/omxdecoder.c | 2 +-

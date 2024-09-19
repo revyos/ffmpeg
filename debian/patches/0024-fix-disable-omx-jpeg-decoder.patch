@@ -1,7 +1,7 @@
-From 094e3f47e9e8ef814b7ffd4214a325ee78a91f4c Mon Sep 17 00:00:00 2001
+From 0d953cf5c8a22a6380b0af031a18bf7cf3022129 Mon Sep 17 00:00:00 2001
 From: Han Gao <gaohan@iscas.ac.cn>
 Date: Tue, 5 Mar 2024 23:51:28 +0800
-Subject: [PATCH 17/17] fix: disable omx jpeg decoder
+Subject: [PATCH 24/27] fix: disable omx jpeg decoder
 
 Signed-off-by: Han Gao <gaohan@iscas.ac.cn>
 ---

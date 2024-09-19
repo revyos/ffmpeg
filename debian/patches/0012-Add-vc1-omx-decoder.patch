@@ -1,7 +1,7 @@
-From fddecf3027f3771b07917176c1406048489359bd Mon Sep 17 00:00:00 2001
+From 827ec56d25f19198a1fc7dbd34665ce7dff44463 Mon Sep 17 00:00:00 2001
 From: huxin <wb-hx963136@alibaba-inc.com>
 Date: Wed, 3 Apr 2024 11:31:43 +0800
-Subject: [PATCH 12/17] Add vc1 omx decoder
+Subject: [PATCH 12/27] Add vc1 omx decoder
 
 ---
  configure               |  1 +

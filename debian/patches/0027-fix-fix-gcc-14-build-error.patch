@@ -1,0 +1,65 @@
+From f86f86b3f7087b4e809a079371c4bc513d3d50f8 Mon Sep 17 00:00:00 2001
+From: Han Gao <gaohan@iscas.ac.cn>
+Date: Thu, 19 Sep 2024 23:19:08 +0800
+Subject: [PATCH 27/27] fix: fix gcc-14 build error
+
+Signed-off-by: Han Gao <gaohan@iscas.ac.cn>
+Signed-off-by: Han Gao <rabenda.cn@gmail.com>
+---
+ libavcodec/omxdecoder.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/libavcodec/omxdecoder.c b/libavcodec/omxdecoder.c
+index 26b016b851..f404529126 100644
+--- a/libavcodec/omxdecoder.c
++++ b/libavcodec/omxdecoder.c
+@@ -1051,17 +1051,15 @@ static int omx_send_extradata(AVCodecContext *avctx)
+ 
+ static int omx_try_fillbuffer(OMXCodecDecoderContext *s, OMX_BUFFERHEADERTYPE *buffer);
+ 
+-static int omx_release_frame(void *opaque, uint8_t *data)
++static void omx_release_frame(void *opaque, uint8_t *data)
+ {
+     AVBufferRef *framecontextref = (AVBufferRef *)opaque;
+     OMXFrameContext *framecontext = (OMXFrameContext *)framecontextref->data;
+ 
+-    omx_try_fillbuffer(framecontext->s, data);
++    omx_try_fillbuffer(framecontext->s, (OMX_BUFFERHEADERTYPE *)data);
+ 
+     av_buffer_unref(&framecontext->decoder_ref);
+     av_buffer_unref(&framecontextref);
+-
+-    return 0;
+ }
+ 
+ static AVBufferRef *omx_out_frame_ref(AVCodecContext *avctx)
+@@ -1081,7 +1079,7 @@ static AVBufferRef *omx_out_frame_ref(AVCodecContext *avctx)
+         av_log(avctx, AV_LOG_ERROR, "av_buffer_ref failed\n");
+         goto fail;
+     }
+-    framecontext->s = c->decoder_ref->data;
++    framecontext->s = (OMXCodecDecoderContext *)c->decoder_ref->data;
+     return framecontextref;
+ fail:
+     if (framecontext && framecontext->decoder_ref)
+@@ -1176,7 +1174,7 @@ static int copyNV12toDst(AVCodecContext *avctx, AVFrame *avframe, OMX_BUFFERHEAD
+             return ret;
+         }
+         s->desc->nb_objects = 1;
+-        s->desc->objects[0].fd = buffer->pBuffer;
++        s->desc->objects[0].fd = (int)buffer->pBuffer;
+         s->desc->objects[0].size = avctx->height * avctx->width * 3 / 2;
+ 
+         s->desc->nb_layers = 1;
+@@ -1205,7 +1203,7 @@ static int copyNV12toDst(AVCodecContext *avctx, AVFrame *avframe, OMX_BUFFERHEAD
+             if (!framecontextref)
+                 return AVERROR(ENOMEM);
+ 
+-            avframe->buf[0] = av_buffer_create(buffer,
++            avframe->buf[0] = av_buffer_create((uint8_t *)buffer,
+                                                sizeof(OMX_BUFFERHEADERTYPE),
+                                                omx_release_frame,
+                                                framecontextref, AV_BUFFER_FLAG_READONLY);
+-- 
+2.40.1
+

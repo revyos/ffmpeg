@@ -1,7 +1,7 @@
-From f519e85bc81ee050056d817e0b8d9899a1c90840 Mon Sep 17 00:00:00 2001
+From 92d7ae968a84eed96138260a3a063be921de7622 Mon Sep 17 00:00:00 2001
 From: huxin <wb-hx963136@alibaba-inc.com>
 Date: Mon, 26 Feb 2024 15:05:01 +0800
-Subject: [PATCH 08/17] Enable mpeg4 omx decoder
+Subject: [PATCH 08/27] Enable mpeg4 omx decoder
 
 ---
  libavcodec/omxdecoder.c | 12 +++++-------

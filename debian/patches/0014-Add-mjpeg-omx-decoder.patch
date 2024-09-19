@@ -1,7 +1,7 @@
-From 174fad934adb5a61bfbfa83c00c8ba8d1eaa33ca Mon Sep 17 00:00:00 2001
+From 133c719d28a5353c8345aa408b31965635c67a09 Mon Sep 17 00:00:00 2001
 From: huxin <wb-hx963136@alibaba-inc.com>
 Date: Wed, 3 Apr 2024 20:30:13 +0800
-Subject: [PATCH 14/17] Add mjpeg omx decoder
+Subject: [PATCH 14/27] Add mjpeg omx decoder
 
 ---
  configure               | 1 +

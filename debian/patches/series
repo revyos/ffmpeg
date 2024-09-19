@@ -14,4 +14,14 @@
 0014-Add-mjpeg-omx-decoder.patch
 0015-Change-decoder-close-method.patch
 0016-Fix-decoding-small-resolution-stuck-issue.patch
-0017-fix-disable-omx-jpeg-decoder.patch
+0017-Fix-the-issue-of-ineffective-extension-parameters.patch
+0018-change_resolution.patch
+0019-Fix-the-loop-mode-for-mpv-player.patch
+0020-Fix-zero-copy-playback-of-uncommon-stride-videos.patch
+0021-Make-decoder-out-frame-queue-always-be-adequate.patch
+0022-Do-not-handle-event-OMX_EventPortSettingsChanged-whe.patch
+0023-Avoid-the-number-of-outport-buffers-for-vp9-more-tha.patch
+0024-fix-disable-omx-jpeg-decoder.patch
+0025-fix-add-type-cast-for-buffer-pBuffer.patch
+0026-fix-use-OMXCodecDecoderContext-insteadof-OMXDecoderC.patch
+0027-fix-fix-gcc-14-build-error.patch

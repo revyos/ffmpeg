@@ -1,7 +1,7 @@
-From c27529240b673eaeea9a4dea0bd8c9fa2a2dd1fa Mon Sep 17 00:00:00 2001
+From a025a42333ca7e22be791f1e0928e37d5234fc3b Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=E6=81=92=E7=95=85?= <dongkaiyuan.dky@alibaba-inc.com>
 Date: Fri, 23 Feb 2024 22:40:18 +0000
-Subject: [PATCH 06/17] Add drm_prime mode into OMXDecoders
+Subject: [PATCH 06/27] Add drm_prime mode into OMXDecoders
 
 ---
  libavcodec/omxdecoder.c   | 156 +++++++++++++++++++++++++++++++++++++-
