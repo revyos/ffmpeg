@@ -13,6 +13,7 @@ include /usr/share/dpkg/architecture.mk
 
 # Ubuntu ld adds -Bsymbolic-functions by default, but that prevents FFmpeg from building.
 export DEB_LDFLAGS_MAINT_STRIP=-Wl,-Bsymbolic-functions
+export DEB_CFLAGS_MAINT_APPEND=-DDRM_PRIME
 
 # Package name for the extra flavor.
 SHLIB_PKGS := $(shell sed -nr '/extra/! s/^Package:[[:space:]]*(lib.*[0-9]+)[[:space:]]*$$/\1/p' debian/control)
