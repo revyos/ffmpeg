@@ -1024,7 +1024,7 @@ static av_cold int wait_for_eof(OMXCodecDecoderContext *s)
 static int omx_send_extradata(AVCodecContext *avctx)
 {
     OMXDecoderContext *c = avctx->priv_data;
-    OMXCodecDecoderContext *s = (OMXDecoderContext *)c->decoder_ref->data;
+    OMXCodecDecoderContext *s = (OMXCodecDecoderContext *)c->decoder_ref->data;
     OMX_BUFFERHEADERTYPE *buffer;
     OMX_ERRORTYPE err;
     if (avctx->extradata_size > 0) {
@@ -1095,7 +1095,7 @@ fail:
 static int copyNV12toDst(AVCodecContext *avctx, AVFrame *avframe, OMX_BUFFERHEADERTYPE *buffer)
 {
     OMXDecoderContext *c = avctx->priv_data;
-    OMXCodecDecoderContext *s = (OMXDecoderContext *)c->decoder_ref->data;
+    OMXCodecDecoderContext *s = (OMXCodecDecoderContext *)c->decoder_ref->data;
     AVBufferRef *framecontextref;
 
     avframe->width = (OMX_U32) avctx->width;
@@ -1261,7 +1261,7 @@ static int copyNV12toDst(AVCodecContext *avctx, AVFrame *avframe, OMX_BUFFERHEAD
 static int convertNV12toYUV420(AVCodecContext *avctx, AVFrame *avframe, OMX_BUFFERHEADERTYPE *buffer)
 {
     OMXDecoderContext *c = avctx->priv_data;
-    OMXCodecDecoderContext *s = (OMXDecoderContext *)c->decoder_ref->data;
+    OMXCodecDecoderContext *s = (OMXCodecDecoderContext *)c->decoder_ref->data;
 #ifdef __OMX_ENABLE_SWCALE
     const uint8_t *src_data[3];
     int srclinesize[3];
@@ -1343,7 +1343,7 @@ static int omx_try_fillbuffer(OMXCodecDecoderContext *s, OMX_BUFFERHEADERTYPE *b
 static int check_buffer_outsize(AVCodecContext *avctx)
 {
     OMXDecoderContext *c = avctx->priv_data;
-    OMXCodecDecoderContext *s = (OMXDecoderContext *)c->decoder_ref->data;
+    OMXCodecDecoderContext *s = (OMXCodecDecoderContext *)c->decoder_ref->data;
     OMX_ERRORTYPE err;
     OMX_PARAM_PORTDEFINITIONTYPE out_port_params = {0};
     INIT_STRUCT(out_port_params);
@@ -1453,7 +1453,7 @@ static int ff_omx_dec_receive(AVCodecContext *avctx, OMXCodecDecoderContext *s,
 static av_cold int omx_component_init_decoder(AVCodecContext *avctx, const char *role)
 {
     OMXDecoderContext *c = avctx->priv_data;
-    OMXCodecDecoderContext *s = (OMXDecoderContext *)c->decoder_ref->data;
+    OMXCodecDecoderContext *s = (OMXCodecDecoderContext *)c->decoder_ref->data;
     OMX_PARAM_COMPONENTROLETYPE role_params = { 0 };
     OMX_PORT_PARAM_TYPE video_port_params = { 0 };
     OMX_PARAM_PORTDEFINITIONTYPE in_port_params = { 0 }, out_port_params = { 0 };
@@ -1819,7 +1819,7 @@ static av_cold void omx_cleanup(OMXCodecDecoderContext *s)
 
 static void omx_release_decoder(void *opaque, uint8_t *data)
 {
-    OMXCodecDecoderContext *s = (OMXDecoderContext *)data;
+    OMXCodecDecoderContext *s = (OMXCodecDecoderContext *)data;
 
     omx_cleanup(s);
     av_free(s);
@@ -2081,7 +2081,7 @@ static int ff_omx_dec_flush(AVCodecContext *avctx, OMXCodecDecoderContext *s)
 static int omx_receive_frame(AVCodecContext *avctx, AVFrame *frame)
 {
     OMXDecoderContext *c = avctx->priv_data;
-    OMXCodecDecoderContext *s = (OMXDecoderContext *)c->decoder_ref->data;
+    OMXCodecDecoderContext *s = (OMXCodecDecoderContext *)c->decoder_ref->data;
     int ret;
     s->got_frame = false;
     /* feed decoder */
@@ -2178,7 +2178,7 @@ end:
 static void omx_decode_flush(AVCodecContext *avctx)
 {
     OMXDecoderContext *c = avctx->priv_data;
-    OMXCodecDecoderContext *s = (OMXDecoderContext *)c->decoder_ref->data;
+    OMXCodecDecoderContext *s = (OMXCodecDecoderContext *)c->decoder_ref->data;
     if (s->buffered_pkt.size > 0) {
         av_packet_unref(&s->buffered_pkt);
         s->buffered_pkt.size = 0;
